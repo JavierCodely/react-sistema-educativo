@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { EnvelopeFill, LockFill, PersonFill } from "react-bootstrap-icons";
-import "../styles/Login.css";
-import { loginMock } from "../services/AuthServices";
+import "../../styles/Login.css";
+import { loginMock } from "../../services/auth/AuthServices";
 
 /**
  * Componente de inicio de sesión
@@ -31,7 +31,7 @@ const Login = () => {
       setIsLoading(true);
       setError("");
 
-      // Aquí iría la implementación de la autenticación con Google
+      // Ala implementación de la autenticación con Google
       // Por ejemplo, utilizando Firebase Authentication u otro servicio
 
       // Ejemplo simulado:
@@ -80,6 +80,10 @@ const Login = () => {
     // Validación básica
     if (!loginData.email || !loginData.password || !loginData.role) {
       setError("Por favor completa todos los campos");
+      if (!/\S+@\S+\.\S+/.test(loginData.email)) {
+        setError('El email no es válido ') 
+        return
+      }
       return;
     }
 
@@ -218,6 +222,7 @@ const Login = () => {
                 placeholder="tu@email.com"
                 required
               />
+              
               <div className="invalid-feedback">
                 El correo electrónico es obligatorio
               </div>

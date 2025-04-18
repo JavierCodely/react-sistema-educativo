@@ -1,0 +1,144 @@
+Estructura Profesional para tu Proyecto de Gestión Educativa
+Veo que estás desarrollando un sistema de gestión educativa en React con múltiples roles y funcionalidades. Basándome en tu código actual y tus objetivos, te propondré una estructura escalable y profesional para organizar tu proyecto frontend.
+Estructura de Carpetas Recomendada
+/src
+  /assets            # Imágenes, iconos, fuentes
+  /components        # Componentes reutilizables
+    /common          # Botones, inputs, modales genéricos
+    /layouts         # Estructuras de página reutilizables
+    /forms           # Componentes de formulario reutilizables
+    /tables          # Componentes de tablas y visualización de datos
+  /contexts          # Context API para estado global
+  /hooks             # Custom hooks
+  /pages             # Componentes de nivel página
+    /auth            # Login, registro, recuperación de contraseña
+    /admin           # Páginas específicas para administradores
+    /profesor        # Páginas específicas para profesores
+    /alumno          # Páginas específicas para alumnos
+  /routes            # Configuración de rutas y protección basada en roles
+  /services          # Servicios y APIs
+    /api             # Llamadas a backend
+    /auth            # Servicios de autenticación
+  /store             # Estado global (si usas Redux u otra solución)
+  /styles            # Estilos globales, variables, temas
+  /types             # Definiciones de TypeScript (si lo usas)
+  /utils             # Funciones utilitarias
+  /config            # Configuraciones de la aplicación
+  /mocks             # Datos de prueba/mocks (útil durante desarrollo)
+Buenas Prácticas para tu Proyecto
+1. Separación de Responsabilidades
+Componentes y Lógica
+
+Separa la lógica de negocio de los componentes visuales usando hooks personalizados
+Implementa patrones como Container/Presentational:
+
+Componentes contenedores: manejan lógica y estado
+Componentes de presentación: solo se encargan de renderizar UI
+
+
+
+2. Manejo de Autenticación
+Servicio de Autenticación Centralizado
+/services/auth
+  - authProvider.js     # Interacción con Auth0/Firebase
+  - authContext.js      # Context para compartir estado de autenticación
+  - authUtils.js        # Funciones auxiliares (validación de tokens, etc.)
+Para Google Auth
+
+Centraliza la configuración de OAuth en /config/auth.js
+Implementa validación de dominio de correo para restringir a @nombreDelainstitucion.edu.ar
+
+3. Rutas Protegidas por Rol
+javascript// Ejemplo conceptual para /routes/ProtectedRoute.js
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const { user, isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) return <Navigate to="/login" />;
+  if (!allowedRoles.includes(user.role)) return <Navigate to="/unauthorized" />;
+  
+  return children;
+};
+4. Estructura para Manejar Roles
+
+Crea rutas y layouts específicos por rol
+Implementa un sistema de permisos basado en matrices
+
+5. Gestión de Estado
+Para un proyecto como el tuyo, recomendaría:
+
+Context API para estado de autenticación y preferencias de usuario
+Estado local (useState) para formularios y componentes simples
+Biblioteca de estado (como Zustand o Redux) solo si la complejidad lo requiere
+
+6. Gestión de API y Backend
+
+Crea un servicio API centralizado (posiblemente con Axios)
+Implementa interceptores para añadir tokens de autenticación
+Estructura tus servicios por dominio de negocio:
+
+/services/api
+  - apiClient.js        # Cliente base con interceptores
+  - alumnosService.js   # Operaciones relacionadas con alumnos
+  - notasService.js     # Operaciones relacionadas con notas
+  - cursosService.js    # Operaciones relacionadas con cursos
+Recomendaciones Específicas
+Para la Autenticación con Google
+
+Configuración:
+
+Crea un archivo de configuración para las credenciales de OAuth
+Ajusta Firebase/Auth0 para restringir dominios de correo
+
+
+Flujo de Autenticación:
+
+En el servicio de autenticación, implementa la validación del dominio del correo
+Maneja tokens y sesiones de manera segura
+Define claramente el proceso de obtención y actualización de roles desde el backend
+
+
+
+Para la Conexión con el Backend
+
+Cliente HTTP Centralizado:
+
+Establece una configuración base para todas las solicitudes
+Configura interceptores para manejo de tokens, errores comunes y refreshing
+
+
+Interfaces Consistentes:
+
+Define tipos/interfaces para las respuestas del API
+Mantén coherencia en el manejo de errores y respuestas
+
+
+
+Para la Escalabilidad
+
+Code Splitting:
+
+Utiliza la carga diferida (lazy loading) para módulos grandes según el rol
+
+
+Componentes Dinámicos:
+
+Implementa un sistema de permisos que permita mostrar/ocultar elementos según el rol
+Considera usar un sistema de feature flags para desplegar funcionalidades gradualmente
+
+
+
+Herramientas Recomendadas
+Para profesionalizar aún más tu proyecto, considera:
+
+TypeScript: Para tipo de datos estático
+ESLint + Prettier: Para mantener la calidad y coherencia del código
+Husky + lint-staged: Para validar cambios antes de commits
+Testing Library React: Para pruebas de componentes
+Storybook: Para documentar componentes visualmente
+
+Próximos Pasos
+
+Refactoriza tu estructura actual siguiendo el esquema propuesto
+Centraliza la autenticación en un contexto dedicado
+Implementa la estructura de rutas protegidas basadas en roles
+Crea una capa de abstracción para tu API que facilite la integración con Spring Boot

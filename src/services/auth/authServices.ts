@@ -1,4 +1,4 @@
-import { User, mockUsers } from "../mocks/alumnoMock";
+import { User, mockUsers } from "../../mocks/alumnoMock";
 
 export function loginMock(
   email: string,
