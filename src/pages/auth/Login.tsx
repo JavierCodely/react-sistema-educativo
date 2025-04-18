@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { EnvelopeFill, LockFill, PersonFill } from "react-bootstrap-icons";
 import "../../styles/Login.css";
 import { loginMock } from "../../services/auth/AuthServices";
-
+import { useAuth } from "../../contexts/authContext";
 /**
  * Componente de inicio de sesión
  *
@@ -18,14 +18,18 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [loginData, setLoginData] = useState({
+    dni: "",
+    name: "",
     email: "",
     password: "",
     role: "alumno", // Valor por defecto
   });
+  const { login } = useAuth(); // obtenemos la función login
   {
     /* Función para manejar el inicio de sesión con Google */
   }
   console.log(email);
+
   const handleGoogleLogin = async () => {
     try {
       setIsLoading(true);
@@ -80,10 +84,7 @@ const Login = () => {
     // Validación básica
     if (!loginData.email || !loginData.password || !loginData.role) {
       setError("Por favor completa todos los campos");
-      if (!/\S+@\S+\.\S+/.test(loginData.email)) {
-        setError('El email no es válido ') 
-        return
-      }
+
       return;
     }
 
@@ -91,11 +92,18 @@ const Login = () => {
 
     try {
       // Llamamos al service que simula un servidor
-      const user = await loginMock(
+      const mockUser = await loginMock(
         loginData.email,
         loginData.password,
         loginData.role
       );
+      const user = {
+        dni: mockUser.dni,
+        name: mockUser.name,
+        email: mockUser.email,
+        role: mockUser.role,
+      };
+      login(user);
 
       setSuccessMessage("Inicio de sesión exitoso");
       setError("");
@@ -222,7 +230,7 @@ const Login = () => {
                 placeholder="tu@email.com"
                 required
               />
-              
+
               <div className="invalid-feedback">
                 El correo electrónico es obligatorio
               </div>

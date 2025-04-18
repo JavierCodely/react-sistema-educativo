@@ -5,351 +5,362 @@
 
 /* Variables globales para mantener consistencia */
 :root {
-    --primary-color: #4361ee;
-    --primary-hover: #3a56d4;
-    --success-color: #2ecc71;
-    --danger-color: #e74c3c;
-    --text-color: #2d3748;
-    --text-light: #718096;
-    --bg-color: #f7fafc;
-    --card-bg: #ffffff;
-    --border-radius: 12px;
-    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-  }
-  
-  /* Contenedor principal - ocupa toda la pantalla con un fondo agradable */
-  .auth-container {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-    padding: 20px;
-  }
-  
-  /* Wrapper para la tarjeta - proporciona espaciado y centrado */
-  .auth-card-wrapper {
-    width: 100%;
-    max-width: 480px;
-  }
-  
-  /* Tarjeta de autenticación - contiene el formulario */
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --success-color: #2ecc71;
+  --danger-color: #e74c3c;
+  --text-color: #2d3748;
+  --text-light: #718096;
+  --bg-color: #f7fafc;
+  --card-bg: #ffffff;
+  --border-radius: 12px;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Contenedor principal - ocupa toda la pantalla con un fondo agradable */
+.auth-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  padding: 20px;
+}
+
+/* Wrapper para la tarjeta - proporciona espaciado y centrado */
+.auth-card-wrapper {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Tarjeta de autenticación - contiene el formulario */
+.auth-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 2.5rem;
+  overflow: hidden;
+  position: relative;
+  transition: var(--transition);
+}
+
+/* Encabezado de la tarjeta - título y descripción */
+.auth-card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-card-header h2 {
+  color: var(--text-color);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.auth-card-header p {
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* Formulario de autenticación */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Grupo de formulario - contiene label e input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.form-label .icon {
+  color: var(--text-light);
+}
+
+/* Estilos para los inputs */
+.form-control {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+/* Botón principal */
+.auth-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 0.5rem;
+}
+
+.auth-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+}
+
+.auth-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Información adicional y enlaces */
+.auth-info {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.auth-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}
+
+.auth-note {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Alertas para mensajes de error y éxito */
+.auth-alert {
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.auth-alert.error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--danger-color);
+  border-left: 4px solid var(--danger-color);
+}
+
+.auth-alert.success {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: var(--success-color);
+  border-left: 4px solid var(--success-color);
+}
+
+/* Sección de selección de rol */
+.role-selection {
+  margin-bottom: 0.5rem;
+}
+
+.role-options {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.role-option {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.25rem;
+  cursor: pointer;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+}
+
+.role-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.role-option label {
+  cursor: pointer;
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.role-option:hover {
+  border-color: #cbd5e0;
+  background-color: #f8fafc;
+}
+
+.role-option.active {
+  border-color: var(--primary-color);
+  background-color: rgba(66, 153, 225, 0.05);
+}
+
+/* Botón para volver (en registro) */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.back-button:hover {
+  color: var(--text-color);
+}
+
+/* Estilos para diseño responsivo */
+@media (max-width: 576px) {
   .auth-card {
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: 2.5rem;
-    overflow: hidden;
-    position: relative;
-    transition: var(--transition);
-  }
-  
-  /* Encabezado de la tarjeta - título y descripción */
-  .auth-card-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .auth-card-header h2 {
-    color: var(--text-color);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    font-size: 1.75rem;
-  }
-  
-  .auth-card-header p {
-    color: var(--text-light);
-    margin: 0;
-  }
-  
-  /* Formulario de autenticación */
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-  
-  /* Grupo de formulario - contiene label e input */
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .form-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-color);
-    font-weight: 500;
-    font-size: 0.95rem;
-  }
-  
-  .form-label .icon {
-    color: var(--text-light);
-  }
-  
-  /* Estilos para los inputs */
-  .form-control {
-    padding: 0.75rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: var(--transition);
-    width: 100%;
-  }
-  
-  .form-control:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
-  }
-  
-  /* Botón principal */
-  .auth-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.85rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    margin-top: 0.5rem;
-  }
-  
-  .auth-button:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
-  }
-  
-  .auth-button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-  }
-  
-  /* Información adicional y enlaces */
-  .auth-info {
-    margin-top: 1.5rem;
-    text-align: center;
-  }
-  
-  .auth-link {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: var(--transition);
-  }
-  
-  .auth-link:hover {
-    text-decoration: underline;
-  }
-  
-  .auth-note {
-    color: var(--text-light);
-    font-size: 0.9rem;
-    margin: 0;
-  }
-  
-  /* Alertas para mensajes de error y éxito */
-  .auth-alert {
-    padding: 0.85rem 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.95rem;
-  }
-  
-  .auth-alert.error {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: var(--danger-color);
-    border-left: 4px solid var(--danger-color);
-  }
-  
-  .auth-alert.success {
-    background-color: rgba(46, 204, 113, 0.1);
-    color: var(--success-color);
-    border-left: 4px solid var(--success-color);
-  }
-  
-  /* Sección de selección de rol */
-  .role-selection {
-    margin-bottom: 0.5rem;
-  }
-  
-  .role-options {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-  }
-  
-  .role-option {
-    flex: 1;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 0.6rem 0.25rem;
-    cursor: pointer;
-    text-align: center;
-    transition: var(--transition);
-    position: relative;
-  }
-  
-  .role-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-  }
-  
-  .role-option label {
-    cursor: pointer;
-    display: block;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  
-  .role-option:hover {
-    border-color: #cbd5e0;
-    background-color: #f8fafc;
-  }
-  
-  .role-option.active {
-    border-color: var(--primary-color);
-    background-color: rgba(66, 153, 225, 0.05);
-  }
-  
-  /* Botón para volver (en registro) */
-  .back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    color: var(--text-light);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: var(--transition);
-  }
-  
-  .back-button:hover {
-    color: var(--text-color);
-  }
-  
-  /* Estilos para diseño responsivo */
-  @media (max-width: 576px) {
-    .auth-card {
-      padding: 1.75rem;
-    }
-    
-    .role-options {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .form-row {
-      flex-direction: column;
-    }
+    padding: 1.75rem;
   }
 
-  /* Separador para opciones de login */
-.auth-separator {
-    margin: 20px 0;
-    text-align: center;
-    position: relative;
+  .role-options {
+    flex-direction: column;
+    gap: 0.5rem;
   }
-  
-  .auth-separator::before,
-  .auth-separator::after {
-    content: "";
-    display: inline-block;
-    width: 40%;
-    height: 1px;
-    background-color: #e0e0e0;
-    position: absolute;
-    top: 50%;
-  }
-  
-  .auth-separator::before {
-    left: 0;
-  }
-  
-  .auth-separator::after {
-    right: 0;
-  }
-  
-  .auth-separator span {
-    display: inline-block;
-    padding: 0 10px;
-    background-color: #fff;
-    position: relative;
-    color: #757575;
-    font-size: 14px;
-  }
-  
-  /* Botón de Google */
-  .social-auth-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 15px;
-  }
-  
-  .google-auth-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background-color: #fff;
-    color: #757575;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .google-auth-button:hover {
-    background-color: #f5f5f5;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .google-auth-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
-  }
-  
-  .google-icon {
-    width: 18px;
-    height: 18px;
-    margin-right: 10px;
-  }
-  
-  /* Animación de aparecer para la tarjeta */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .auth-card {
-    animation: fadeIn 0.4s ease-out;
-  }
-  
-  /* Estilos para filas en formularios (como nombre y apellido juntos) */
+
   .form-row {
-    display: flex;
-    gap: 1rem;
+    flex-direction: column;
   }
-  
-  .form-row .form-group {
-    flex: 1;
+}
+
+/* Separador para opciones de login */
+.auth-separator {
+  margin: 20px 0;
+  text-align: center;
+  position: relative;
+}
+
+.auth-separator::before,
+.auth-separator::after {
+  content: "";
+  display: inline-block;
+  width: 40%;
+  height: 1px;
+  background-color: #e0e0e0;
+  position: absolute;
+  top: 50%;
+}
+
+.auth-separator::before {
+  left: 0;
+}
+
+.auth-separator::after {
+  right: 0;
+}
+
+.auth-separator span {
+  display: inline-block;
+  padding: 0 10px;
+  background-color: #fff;
+  position: relative;
+  color: #757575;
+  font-size: 14px;
+}
+
+/* Botón de Google */
+.social-auth-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.google-auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #757575;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.google-auth-button:hover {
+  background-color: #f5f5f5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.google-auth-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.3);
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+/* Animación de aparecer para la tarjeta */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-card {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Estilos para filas en formularios (como nombre y apellido juntos) */
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.google-auth-button:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.2);
+
+}
+
+
