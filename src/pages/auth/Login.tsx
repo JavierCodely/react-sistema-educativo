@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { EnvelopeFill, LockFill, PersonFill } from "react-bootstrap-icons";
 import "../../styles/Login.css";
-import { loginMock } from "../../services/auth/AuthServices";
+import { loginMock } from "../../services/auth/authServices";
 import { useAuth } from "../../contexts/authContext";
 /**
  * Componente de inicio de sesión
