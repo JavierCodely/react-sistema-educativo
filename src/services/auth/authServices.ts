@@ -9,7 +9,11 @@ export function loginMock(
     // Simulamos que el servidor tarda un poco
     setTimeout(() => {
       const user = mockUsers.find(
-        (u) => u.email === email && u.password === password && u.role === role
+        (u) =>
+          
+          u.email === email &&
+          u.password === password &&
+          u.role === role
       );
 
       if (user) {
