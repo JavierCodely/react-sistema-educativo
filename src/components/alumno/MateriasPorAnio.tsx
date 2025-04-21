@@ -56,7 +56,7 @@ const MateriasPorAnio: React.FC<MateriasPorAnioProps> = ({ materias }) => {
           Estado de Materias
         </Card.Title>
 
-        <Accordion defaultActiveKey="0">
+        <Accordion >
           {Object.entries(materiasPorAnio).map(([anio, materias], index) => (
             <Accordion.Item key={anio} eventKey={index.toString()}>
               <Accordion.Header>
