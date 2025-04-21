@@ -1,0 +1,106 @@
+/* src/App.css */
+
+/* Variables de colores personalizados */
+:root {
+    --primary-color: #0055a4;
+    --secondary-color: #007bff;
+    --accent-color: #28a745;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+  }
+  
+  body {
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Estilo para las tarjetas */
+  .card {
+    border-radius: 10px;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Estilo para la barra de navegación */
+  .navbar {
+    box-shadow: 0 2px 10px rgba(15, 7, 245, 0.1);
+  }
+  
+  /* Estilo para las pestañas */
+  .nav-tabs .nav-link {
+    border-radius: 6px 6px 0 0;
+    font-weight: 500;
+  }
+  
+  .nav-tabs .nav-link.active {
+    border-bottom: 3px solid var(--accent-color);
+  }
+  
+  /* Estilo para botones */
+  .btn {
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+  }
+  
+  /* Estilo para tabla responsiva en móviles */
+  @media (max-width: 768px) {
+    .table-responsive {
+      font-size: 0.9rem;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+    }
+  }
+  
+  /* Estilo para acordeón */
+  .accordion-button:not(.collapsed) {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--accent-color);
+  }
+  
+  /* Estilo para alertas */
+  .alert {
+    border-radius: 8px;
+  }
+  
+  /* Mejoras visuales para el formulario */
+  .form-control, .form-select {
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+  }
+  
+  /* Animación para spinner */
+  .spinner-border {
+    border-right-color: transparent;
+  }
+  
+  /* Estilo para etiquetas badge */
+  .badge {
+    font-weight: 500;
+    padding: 0.4em 0.6em;
+  }
+  
+  /* Mejoras para las cards de materias */
+  .border-success {
+    border-left: 4px solid var(--accent-color) !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+  }
+  
+  .border-primary {
+    border-left: 4px solid var(--secondary-color) !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+  }
