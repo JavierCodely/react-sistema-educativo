@@ -34,8 +34,6 @@ const Examenes = ({
   inscripciones,
   onInscripcionActualizada,
 }: ExamenesProps) => {
-  const [materiaSeleccionada, setMateriaSeleccionada] =
-    useState<MesaDisponible | null>(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [exito, setExito] = useState<string | null>(null);
@@ -50,17 +48,28 @@ const Examenes = ({
 
   // Función para manejar la inscripción al examen
   const handleInscripcion = async (values: { mesaId: string }) => {
-    if (!materiaSeleccionada) return;
+    // Encuentra la materia correspondiente al mesaId
+    const mesaId = values.mesaId;
+    let materiaId: string | null = null;
+    let materiaNombre: string | null = null;
+
+    for (const materia of materiasDisponibles) {
+      const mesa = materia.mesas.find((m) => m.id === mesaId);
+      if (mesa) {
+        materiaId = materia.materiaId;
+        materiaNombre = materia.materiaNombre;
+        break;
+      }
+    }
+
+    if (!materiaId || !materiaNombre) return;
 
     setCargando(true);
     setError(null);
 
     try {
-      await inscribirExamen(materiaSeleccionada.materiaId, values.mesaId);
-      setExito(
-        `Te has inscrito correctamente a ${materiaSeleccionada.materiaNombre}`
-      );
-      setMateriaSeleccionada(null);
+      await inscribirExamen(materiaId, mesaId);
+      setExito(`Te has inscrito correctamente a ${materiaNombre}`);
       onInscripcionActualizada();
     } catch (err) {
       setError("Error al realizar la inscripción. Inténtalo nuevamente.");
@@ -69,7 +78,6 @@ const Examenes = ({
       setCargando(false);
     }
   };
-
   // Función para confirmar desinscripción
   const confirmarDesinscripcion = (inscripcion: InscripcionExamen) => {
     setInscripcionAEliminar(inscripcion);
@@ -133,11 +141,8 @@ const Examenes = ({
 
         <NuevasInscripciones
           materiasDisponibles={materiasDisponibles}
-          materiaSeleccionada={materiaSeleccionada}
-          setMateriaSeleccionada={setMateriaSeleccionada}
           handleInscripcion={handleInscripcion}
           cargando={cargando}
-          inscripcionSchema={inscripcionSchema}
         />
 
         <ModalDesinscripcion
@@ -245,35 +250,78 @@ interface NuevasInscripcionesProps {
 
 const NuevasInscripciones = ({
   materiasDisponibles,
-  materiaSeleccionada,
-  setMateriaSeleccionada,
   handleInscripcion,
   cargando,
-  inscripcionSchema,
-}: NuevasInscripcionesProps) => (
-  <section>
-    <h5 className="mt-4 mb-3">Inscribirse a nuevos exámenes</h5>
-    {materiasDisponibles.length === 0 ? (
-      <Alert variant="info">
-        No hay materias disponibles para inscripción en este momento.
-      </Alert>
-    ) : !materiaSeleccionada ? (
-      <ListaMaterias
-        materias={materiasDisponibles}
-        onSeleccionar={setMateriaSeleccionada}
-        cargando={cargando}
-      />
-    ) : (
-      <SeleccionMesa
-        materia={materiaSeleccionada}
-        onVolver={() => setMateriaSeleccionada(null)}
-        onSubmit={handleInscripcion}
-        cargando={cargando}
-        inscripcionSchema={inscripcionSchema}
-      />
-    )}
-  </section>
-);
+}: {
+  materiasDisponibles: MesaDisponible[];
+  handleInscripcion: (values: { mesaId: string }) => void;
+  cargando: boolean;
+}) => {
+  // Función para manejar la inscripción directa
+  const inscribirDirectamente = (materiaId: string, mesaId: string) => {
+    handleInscripcion({ mesaId });
+  };
+
+  return (
+    <section>
+      <h5 className="mt-4 mb-3">Inscribirse a nuevos exámenes</h5>
+      {materiasDisponibles.length === 0 ? (
+        <Alert variant="info">
+          No hay materias disponibles para inscripción en este momento.
+        </Alert>
+      ) : (
+        <Table responsive striped hover className="align-middle">
+          <thead>
+            <tr>
+              <th>Materia</th>
+              <th>Mesas disponibles</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {materiasDisponibles.flatMap((materia) =>
+              materia.mesas.map((mesa) => (
+                <tr key={`${materia.materiaId}-${mesa.id}`}>
+                  <td className="fw-medium">{materia.materiaNombre}</td>
+                  <td>
+                    {mesa.nombre} - {new Date(mesa.fecha).toLocaleDateString()}
+                  </td>
+                  <td>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() =>
+                        inscribirDirectamente(materia.materiaId, mesa.id)
+                      }
+                      disabled={cargando}
+                      className="d-flex align-items-center"
+                    >
+                      {cargando ? (
+                        <>
+                          <Spinner
+                            as="span"
+                            animation="border"
+                            size="sm"
+                            role="status"
+                            aria-hidden="true"
+                            className="me-2"
+                          />
+                          <span>Inscribiendo...</span>
+                        </>
+                      ) : (
+                        "Inscribirse"
+                      )}
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </Table>
+      )}
+    </section>
+  );
+};
 
 // Componente para la lista de materias disponibles
 interface ListaMateriasProps {
