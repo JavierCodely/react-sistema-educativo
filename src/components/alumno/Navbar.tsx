@@ -1,6 +1,7 @@
 // src/components/Navbar.tsx
 
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Navbar as BootstrapNavbar,
   Container,
@@ -16,6 +17,21 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ nombreEstudiante, onNavegar }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Limpiar todo el localStorage
+    localStorage.clear();
+    
+    
+    // localStorage.removeItem('token');
+    // localStorage.removeItem('userData');
+    // localStorage.removeItem('role');
+    
+    // Redireccionar al login
+    navigate('/login');
+  };
+
   return (
     <BootstrapNavbar bg="primary" variant="dark" expand="lg" className="mb-4">
       <Container>
@@ -53,11 +69,10 @@ const Navbar: React.FC<NavbarProps> = ({ nombreEstudiante, onNavegar }) => {
               align="end"
             >
               <NavDropdown.Item href="#perfil">Mi Perfil</NavDropdown.Item>
-              <NavDropdown.Item href="#configuracion">
-                Configuración
-              </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#logout">Cerrar Sesión</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleLogout}>
+                Cerrar Sesión
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </BootstrapNavbar.Collapse>
