@@ -49,14 +49,14 @@ const MateriasPorAnio: React.FC<MateriasPorAnioProps> = ({ materias }) => {
   }, [materias]);
 
   return (
-    <Card className="mb-4 shadow-sm">
+    <Card className="mb-4 shadow-s">
       <Card.Body>
-        <Card.Title className="mb-4">
-          <i className="bi bi-book me-2"></i>
+        <Card.Title className="mb-4 ">
+          <i className="bi bi-book me-2 "></i>
           Estado de Materias
         </Card.Title>
 
-        <Accordion >
+        <Accordion>
           {Object.entries(materiasPorAnio).map(([anio, materias], index) => (
             <Accordion.Item key={anio} eventKey={index.toString()}>
               <Accordion.Header>

@@ -9,6 +9,9 @@
     --dark-gray: #343a40;
   }
   
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: #f5f7fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
