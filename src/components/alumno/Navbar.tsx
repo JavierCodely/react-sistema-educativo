@@ -1,7 +1,6 @@
 // src/components/Navbar.tsx
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef } from "react";
 import {
   Navbar as BootstrapNavbar,
   Container,
@@ -17,42 +16,40 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ nombreEstudiante, onNavegar }) => {
-  const navigate = useNavigate();
+  // Crear una referencia al toggle del navbar
+  const navbarToggleRef = useRef<HTMLButtonElement>(null);
 
-  const handleLogout = () => {
-    // Limpiar todo el localStorage
-    localStorage.clear();
+  // Función que maneja la navegación y cierra el navbar
+  const handleNavigation = (seccion: "inicio" | "horarios" | "examenes" | "correlativas" | "tabs") => {
+    onNavegar(seccion);
     
-    
-    // localStorage.removeItem('token');
-    // localStorage.removeItem('userData');
-    // localStorage.removeItem('role');
-    
-    // Redireccionar al login
-    navigate('/login');
+    // Cierra el navbar si está abierto (en modo responsive)
+    if (window.innerWidth < 992) { // Bootstrap lg breakpoint
+      navbarToggleRef.current?.click();
+    }
   };
 
   return (
     <BootstrapNavbar bg="primary" variant="dark" expand="lg" className="mb-4">
       <Container>
         <BootstrapNavbar.Brand
-          onClick={() => onNavegar("inicio")}
+          onClick={() => handleNavigation("inicio")}
           style={{ cursor: "pointer" }}
         >
           <i className="bi bi-mortarboard-fill me-2"></i>
           Sistema Universitario
         </BootstrapNavbar.Brand>
-        <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
+        <BootstrapNavbar.Toggle ref={navbarToggleRef} aria-controls="basic-navbar-nav" />
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link onClick={() => onNavegar("inicio")}>Inicio</Nav.Link>
-            <Nav.Link onClick={() => onNavegar("examenes")}>Examenes</Nav.Link>
+            <Nav.Link onClick={() => handleNavigation("inicio")}>Inicio</Nav.Link>
+            <Nav.Link onClick={() => handleNavigation("examenes")}>Examenes</Nav.Link>
             <NavDropdown title="Académico" id="academic-dropdown">
-              <NavDropdown.Item onClick={() => onNavegar("horarios")}>
+              <NavDropdown.Item onClick={() => handleNavigation("horarios")}>
                 Horarios
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={() => onNavegar("correlativas")}>
+              <NavDropdown.Item onClick={() => handleNavigation("correlativas")}>
                 Plan de Correlativas
               </NavDropdown.Item>
             </NavDropdown>
@@ -70,9 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ nombreEstudiante, onNavegar }) => {
             >
               <NavDropdown.Item href="#perfil">Mi Perfil</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={handleLogout}>
-                Cerrar Sesión
-              </NavDropdown.Item>
+              <NavDropdown.Item href="#logout">Cerrar Sesión</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </BootstrapNavbar.Collapse>
