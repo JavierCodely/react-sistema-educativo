@@ -31,6 +31,7 @@ export const mockUsers: User[] = [
   },
 ];
 
+
 // src/mock/alumnoMocks.ts
 import { Estudiante, Materia, EstadoMateria, MesaDisponible, InscripcionExamen } from '../types/alumnoTypes';
 
@@ -113,4 +114,112 @@ export const inscripcionesMock: InscripcionExamen[] = [
     materiaNombre: 'Física I',
     mesaNombre: 'Mesa 1'
   }
+];
+export interface PlanEstudio {
+  anios: AnioPlan[];
+}
+
+export interface AnioPlan {
+  anio: number;
+  cuatrimestres: CuatrimestrePlan[];
+}
+
+export interface CuatrimestrePlan {
+  cuatrimestre: number;
+  materias: string[]; // IDs de las materias
+}
+
+// Estructura para los requisitos de promoción/final
+export interface RequisitosMateria {
+  materiaId: string;
+  requisitosPromocion: string[];
+  requisitosFinales: string[];
+  descripcionPromocion?: string;
+  descripcionFinal?: string;
+}
+
+
+
+
+
+
+// Mock del plan de estudios
+export const planEstudioMock: PlanEstudio = {
+  anios: [
+    {
+      anio: 1,
+      cuatrimestres: [
+        {
+          cuatrimestre: 1,
+          materias: ['1', '2', '5']
+        },
+        {
+          cuatrimestre: 2,
+          materias: ['3', '4']
+        }
+      ]
+    },
+    {
+      anio: 2,
+      cuatrimestres: [
+        {
+          cuatrimestre: 1,
+          materias: ['6', '8']
+        },
+        {
+          cuatrimestre: 2,
+          materias: ['7', '9', '10']
+        }
+      ]
+    },
+    {
+      anio: 3,
+      cuatrimestres: [
+        {
+          cuatrimestre: 1,
+          materias: ['11', '13']
+        },
+        {
+          cuatrimestre: 2,
+          materias: ['12', '14']
+        }
+      ]
+    }
+  ]
+};
+
+// Mock de requisitos para promoción/final
+export const requisitosMateriasMock: RequisitosMateria[] = [
+  {
+    materiaId: '6', // Análisis Matemático II
+    requisitosPromocion: ['1'], // Análisis Matemático I
+    requisitosFinales: ['1'],
+    descripcionPromocion: 'Aprobar con nota 7 o superior y 80% de asistencia'
+  },
+  {
+    materiaId: '7', // Física II
+    requisitosPromocion: ['3'], // Física I
+    requisitosFinales: ['3'],
+    descripcionPromocion: 'Aprobar con nota 7 o superior y 80% de asistencia',
+    descripcionFinal: 'Tener aprobada la correlativa y aprobar examen final'
+  },
+  {
+    materiaId: '8', // Programación I
+    requisitosPromocion: [],
+    requisitosFinales: [],
+    descripcionPromocion: 'Aprobar con nota 7 o superior y 80% de asistencia'
+  },
+  {
+    materiaId: '11', // Bases de Datos
+    requisitosPromocion: ['8'], // Programación I
+    requisitosFinales: ['8'],
+    descripcionPromocion: 'Aprobar con nota 7 o superior y entregar proyecto final'
+  },
+  {
+    materiaId: '13', // Programación II
+    requisitosPromocion: ['8'], // Programación I
+    requisitosFinales: ['8'],
+    descripcionPromocion: 'Aprobar con nota 7 o superior y entregar proyecto final'
+  },
+  
 ];

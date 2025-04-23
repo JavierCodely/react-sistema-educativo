@@ -47,3 +47,28 @@ export interface Estudiante {
     materiaNombre: string;
     mesaNombre: string;
   }
+
+
+  // para la mierda del roadmap
+
+  export interface PlanEstudio {
+    anios: AnioPlan[];
+  }
+  
+  export interface AnioPlan {
+    anio: number;
+    cuatrimestres: CuatrimestrePlan[];
+  }
+  
+  export interface CuatrimestrePlan {
+    cuatrimestre: number;
+    materias: string[]; // IDs de las materias
+  }
+  
+  export interface RequisitosMateria {
+    materiaId: string;
+    requisitosPromocion: string[];
+    requisitosFinales: string[];
+    descripcionPromocion?: string;
+    descripcionFinal?: string;
+  }

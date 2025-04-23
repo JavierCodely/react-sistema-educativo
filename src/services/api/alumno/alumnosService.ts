@@ -6,12 +6,17 @@ import {
   Materia,
   MesaDisponible,
   InscripcionExamen,
+  PlanEstudio,
+  RequisitosMateria,
+  EstadoMateria,
 } from "../../../types/alumnoTypes";
 import {
   estudianteMock,
   materiasMock,
   mesasDisponiblesMock,
   inscripcionesMock,
+  planEstudioMock,
+  requisitosMateriasMock,
 } from "../../../mocks/alumnoMock";
 
 //const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
@@ -147,4 +152,150 @@ export const desinscribirExamen = async (
     console.error("Error al desinscribir examen:", error);
     throw error;
   }
+};
+
+// Función para obtener el plan de estudios
+export const getPlanEstudio = async (): Promise<PlanEstudio> => {
+  if (USE_MOCK) {
+    return Promise.resolve(planEstudioMock);
+  }
+
+  try {
+    const response = await axios.get<PlanEstudio>(`${API_URL}/plan-estudio`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener plan de estudio:", error);
+    throw error;
+  }
+};
+
+// Función para obtener los requisitos de una materia
+export const getRequisitosMateria = async (
+  materiaId: string
+): Promise<RequisitosMateria | undefined> => {
+  if (USE_MOCK) {
+    const requisitos = requisitosMateriasMock.find(
+      (r) => r.materiaId === materiaId
+    );
+    return Promise.resolve(requisitos);
+  }
+
+  try {
+    const response = await axios.get<RequisitosMateria>(
+      `${API_URL}/materias/${materiaId}/requisitos`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error al obtener requisitos para materia ${materiaId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Función para obtener detalles completos de una materia con sus correlativas
+export const getMateriaConCorrelativas = async (
+  materiaId: string
+): Promise<{
+  materia: Materia | undefined;
+  correlativas: Materia[];
+  requisitos: RequisitosMateria | undefined;
+}> => {
+  if (USE_MOCK) {
+    const materia = materiasMock.find((m) => m.id === materiaId);
+    let correlativas: Materia[] = [];
+
+    if (materia?.correlativas && materia.correlativas.length > 0) {
+      correlativas = materiasMock.filter((m) =>
+        materia.correlativas?.includes(m.id)
+      );
+    }
+
+    const requisitos = requisitosMateriasMock.find(
+      (r) => r.materiaId === materiaId
+    );
+
+    return Promise.resolve({
+      materia,
+      correlativas,
+      requisitos,
+    });
+  }
+
+  try {
+    const responses = await Promise.all([
+      axios.get<Materia>(`${API_URL}/materias/${materiaId}`),
+      axios.get<Materia[]>(`${API_URL}/materias/${materiaId}/correlativas`),
+      axios.get<RequisitosMateria>(
+        `${API_URL}/materias/${materiaId}/requisitos`
+      ),
+    ]);
+
+    return {
+      materia: responses[0].data,
+      correlativas: responses[1].data,
+      requisitos: responses[2].data,
+    };
+  } catch (error) {
+    console.error(
+      `Error al obtener materia ${materiaId} con correlativas:`,
+      error
+    );
+    throw error;
+  }
+};
+
+// Función para determinar si una materia se puede cursar
+export const puedeRecursarMateria = (
+  materia: Materia,
+  todasLasMaterias: Materia[]
+): boolean => {
+  // Si no tiene correlativas, se puede cursar
+  if (!materia.correlativas || materia.correlativas.length === 0) {
+    return true;
+  }
+
+  // Verificar que todas las correlativas estén en estado REGULAR o PROMOCION
+  return materia.correlativas.every((correlativaId) => {
+    const correlativa = todasLasMaterias.find((m) => m.id === correlativaId);
+    return (
+      correlativa &&
+      (correlativa.estado === EstadoMateria.REGULAR ||
+        correlativa.estado === EstadoMateria.PROMOCION)
+    );
+  });
+};
+
+// Función para determinar el estado de cursabilidad de una materia
+export const getEstadoCursabilidad = (
+  materia: Materia,
+  todasLasMaterias: Materia[]
+): {
+  puedeRecursar: boolean;
+  correlativasFaltantes: Materia[];
+} => {
+  // Si no tiene correlativas, se puede cursar
+  if (!materia.correlativas || materia.correlativas.length === 0) {
+    return {
+      puedeRecursar: true,
+      correlativasFaltantes: [],
+    };
+  }
+
+  const correlativasFaltantes = materia.correlativas
+    .map((correlativaId) =>
+      todasLasMaterias.find((m) => m.id === correlativaId)
+    )
+    .filter(
+      (correlativa): correlativa is Materia =>
+        !!correlativa &&
+        correlativa.estado !== EstadoMateria.REGULAR &&
+        correlativa.estado !== EstadoMateria.PROMOCION
+    );
+
+  return {
+    puedeRecursar: correlativasFaltantes.length === 0,
+    correlativasFaltantes,
+  };
 };

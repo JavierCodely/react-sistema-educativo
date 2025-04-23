@@ -7,7 +7,7 @@ import WelcomeSection from "../../components/alumno/WelcomeSection";
 import Navbar from "../../components/alumno/Navbar";
 import Horarios from "../../components/alumno/Horarios";
 import TablaEstados from "../../components/alumno/TablaEstados";
-import PlanCorrelativas from "../../components/alumno/PlanCorrelativas";
+import RoadmapAcademico from "../../components/alumno/RoadmapAcademico";
 import {
   getEstudiante,
   getMaterias,
@@ -126,7 +126,8 @@ const StudentDashboard: React.FC = () => {
         )}
 
         {seccionActiva === "horarios" && <Horarios />}
-        {seccionActiva === "correlativas" && <PlanCorrelativas />}
+       
+        {seccionActiva === "correlativas" && <RoadmapAcademico />}
 
         {/* Componente de pestañas extraído */}
         {seccionActiva === "tabs" || seccionActiva === "examenes" ? (
