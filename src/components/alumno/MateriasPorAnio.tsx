@@ -21,6 +21,8 @@ const getEstadoColor = (estado: EstadoMateria): string => {
       return "danger";
     case EstadoMateria.FALTA_CORRELATIVA:
       return "warning";
+    case EstadoMateria.APROBADO:
+      return "success";
     case EstadoMateria.NO_CURSADO:
     default:
       return "secondary";
@@ -71,6 +73,7 @@ const MateriasPorAnio: React.FC<MateriasPorAnioProps> = ({ materias }) => {
                     <tr>
                       <th>Código</th>
                       <th>Materia</th>
+                      <th>Notas</th>
                       <th>Estado</th>
                     </tr>
                   </thead>
@@ -79,6 +82,11 @@ const MateriasPorAnio: React.FC<MateriasPorAnioProps> = ({ materias }) => {
                       <tr key={materia.id}>
                         <td>{materia.codigo}</td>
                         <td>{materia.nombre}</td>
+                        <td>
+                          {materia.notas.map((nota) =>
+                            nota.nota > 0 ? nota.nota : "No cursada"
+                          )}
+                        </td>
                         <td>
                           <Badge bg={getEstadoColor(materia.estado)}>
                             {materia.estado}

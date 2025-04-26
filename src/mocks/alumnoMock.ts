@@ -30,6 +30,12 @@ export const materiasMock: Materia[] = [
     anio: 1,
     estado: EstadoMateria.PROMOCION,
     codigo: "RED1",
+    notas: [
+      {
+        id: "1",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "2",
@@ -37,6 +43,12 @@ export const materiasMock: Materia[] = [
     anio: 1,
     estado: EstadoMateria.PROMOCION,
     codigo: "MAT",
+    notas: [
+      {
+        id: "2",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "3",
@@ -44,6 +56,12 @@ export const materiasMock: Materia[] = [
     anio: 1,
     estado: EstadoMateria.PROMOCION,
     codigo: "FIS",
+    notas: [
+      {
+        id: "3",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "4",
@@ -51,6 +69,12 @@ export const materiasMock: Materia[] = [
     anio: 1,
     estado: EstadoMateria.PROMOCION,
     codigo: "ING1",
+    notas: [
+      {
+        id: "4",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "5",
@@ -58,13 +82,25 @@ export const materiasMock: Materia[] = [
     anio: 1,
     estado: EstadoMateria.PROMOCION,
     codigo: "PP1",
+    notas: [
+      {
+        id: "5",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "6",
     nombre: "Comunicación",
     anio: 1,
-    estado: EstadoMateria.LIBRE,
+    estado: EstadoMateria.APROBADO,
     codigo: "COM",
+    notas: [
+      {
+        id: "6",
+        nota: 7,
+      },
+    ],
   },
   {
     id: "7",
@@ -72,6 +108,12 @@ export const materiasMock: Materia[] = [
     anio: 1,
     estado: EstadoMateria.LIBRE,
     codigo: "TS",
+    notas: [
+      {
+        id: "7",
+        nota: 0,
+      },
+    ],
   },
 
   // Segundo año
@@ -81,6 +123,12 @@ export const materiasMock: Materia[] = [
     anio: 2,
     estado: EstadoMateria.PROMOCION,
     codigo: "TI",
+    notas: [
+      {
+        id: "8",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "9",
@@ -88,6 +136,12 @@ export const materiasMock: Materia[] = [
     anio: 2,
     estado: EstadoMateria.PROMOCION,
     codigo: "AED",
+    notas: [
+      {
+        id: "9",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "10",
@@ -95,6 +149,12 @@ export const materiasMock: Materia[] = [
     anio: 2,
     estado: EstadoMateria.PROMOCION,
     codigo: "LP2",
+    notas: [
+      {
+        id: "10",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "11",
@@ -102,6 +162,12 @@ export const materiasMock: Materia[] = [
     anio: 2,
     estado: EstadoMateria.PROMOCION,
     codigo: "BD",
+    notas: [
+      {
+        id: "11",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "12",
@@ -109,6 +175,12 @@ export const materiasMock: Materia[] = [
     anio: 2,
     estado: EstadoMateria.PROMOCION,
     codigo: "EST",
+    notas: [
+      {
+        id: "12",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "13",
@@ -116,6 +188,12 @@ export const materiasMock: Materia[] = [
     anio: 2,
     estado: EstadoMateria.PROMOCION,
     codigo: "PP2",
+    notas: [
+      {
+        id: "13",
+        nota: 8,
+      },
+    ],
   },
   {
     id: "14",
@@ -124,6 +202,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.REGULAR,
     codigo: "ING2",
     correlativas: ["4"],
+    notas: [
+      {
+        id: "14",
+        nota: 6,
+      },
+    ],
   },
   {
     id: "15",
@@ -132,6 +216,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.FALTA_CORRELATIVA,
     codigo: "DLL",
     correlativas: ["6"],
+    notas: [
+      {
+        id: "15",
+        nota: 8,
+      },
+    ],
   },
 
   // Tercer año
@@ -142,6 +232,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.CURSANDO,
     codigo: "ING3",
     correlativas: ["14"],
+    notas: [
+      {
+        id: "16",
+        nota: 0,
+      },
+    ],
   },
   {
     id: "17",
@@ -150,6 +246,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.CURSANDO,
     codigo: "IMD",
     correlativas: ["11"],
+    notas: [
+      {
+        id: "17",
+        nota: 0,
+      },
+    ],
   },
   {
     id: "18",
@@ -158,6 +260,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.CURSANDO,
     codigo: "IA",
     correlativas: ["9", "10"],
+    notas: [
+      {
+        id: "18",
+        nota: 0,
+      },
+    ],
   },
   {
     id: "19",
@@ -166,6 +274,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.CURSANDO,
     codigo: "ASOR",
     correlativas: ["1"],
+    notas: [
+      {
+        id: "19",
+        nota: 0,
+      },
+    ],
   },
   {
     id: "20",
@@ -173,6 +287,12 @@ export const materiasMock: Materia[] = [
     anio: 3,
     estado: EstadoMateria.CURSANDO,
     codigo: "SD",
+    notas: [
+      {
+        id: "20",
+        nota: 0,
+      },
+    ],
   },
   {
     id: "21",
@@ -181,6 +301,12 @@ export const materiasMock: Materia[] = [
     estado: EstadoMateria.CURSANDO,
     codigo: "PP3",
     correlativas: ["13"],
+    notas: [
+      {
+        id: "21",
+        nota: 0,
+      },
+    ],
   },
 ];
 
@@ -188,6 +314,7 @@ export const mesasDisponiblesMock: MesaDisponible[] = [
   {
     materiaId: "6",
     materiaNombre: "Comunicación",
+    estado: EstadoMateria.LIBRE,
     mesas: [
       { id: "m1-c", nombre: "Mesa 1", fecha: "2025-05-12" },
       { id: "m2-c", nombre: "Mesa 2", fecha: "2025-05-26" },
@@ -196,6 +323,7 @@ export const mesasDisponiblesMock: MesaDisponible[] = [
   {
     materiaId: "7",
     materiaNombre: "Teoría de los Sistemas",
+    estado: EstadoMateria.LIBRE,
     mesas: [
       { id: "m1-ts", nombre: "Mesa 1", fecha: "2025-05-15" },
       { id: "m2-ts", nombre: "Mesa 2", fecha: "2025-05-29" },
@@ -204,6 +332,7 @@ export const mesasDisponiblesMock: MesaDisponible[] = [
   {
     materiaId: "14",
     materiaNombre: "Inglés II",
+    estado: EstadoMateria.REGULAR,
     mesas: [
       { id: "m1-ing2", nombre: "Mesa 1", fecha: "2025-05-20" },
       { id: "m2-ing2", nombre: "Mesa 2", fecha: "2025-06-03" },
@@ -218,6 +347,7 @@ export const inscripcionesMock: InscripcionExamen[] = [
     fecha: "2025-05-12",
     materiaNombre: "Comunicación",
     mesaNombre: "Mesa 1",
+    estado: EstadoMateria.LIBRE,
   },
 ];
 
