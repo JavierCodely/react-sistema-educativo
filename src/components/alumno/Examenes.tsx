@@ -9,10 +9,11 @@ import {
   Alert,
   Spinner,
   Modal,
+  Badge,
 } from "react-bootstrap";
 import { Formik, Form as FormikForm, Field } from "formik";
 import * as Yup from "yup";
-import { MesaDisponible, InscripcionExamen } from "../../types/alumnoTypes";
+import { MesaDisponible, InscripcionExamen, EstadoMateria } from "../../types/alumnoTypes";
 
 //servicios de alumnos
 import {
@@ -29,6 +30,29 @@ interface ExamenesProps {
 const inscripcionSchema = Yup.object().shape({
   mesaId: Yup.string().required("Debe seleccionar una mesa"),
 });
+
+// Función para obtener el color del badge según el estado de la materia
+const getEstadoColor = (estado: EstadoMateria): string => {
+  switch (estado) {
+    case EstadoMateria.PROMOCION:
+      return "success";
+    case EstadoMateria.REGULAR:
+      return "info";
+    case EstadoMateria.CURSANDO:
+      return "primary";
+    case EstadoMateria.LIBRE:
+      return "danger";
+    case EstadoMateria.FALTA_CORRELATIVA:
+      return "warning";
+    case EstadoMateria.APROBADO:
+      return "success";
+    case EstadoMateria.NO_CURSADO:
+    default:
+      return "secondary";
+  }
+};
+
+
 
 const Examenes = ({
   mesasDisponibles,
@@ -212,6 +236,7 @@ const InscripcionesActuales = ({
             <th>Materia</th>
             <th>Mesa</th>
             <th>Fecha</th>
+            <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -221,6 +246,11 @@ const InscripcionesActuales = ({
               <td>{inscripcion.materiaNombre}</td>
               <td>{inscripcion.mesaNombre}</td>
               <td>{new Date(inscripcion.fecha).toLocaleDateString()}</td>
+              <td>
+                <Badge bg={getEstadoColor(inscripcion.estado)}>
+                  {inscripcion.estado}
+                </Badge>
+              </td>
               <td>
                 <Button
                   variant="outline-danger"
@@ -276,6 +306,7 @@ const NuevasInscripciones = ({
             <tr>
               <th>Materia</th>
               <th>Mesas disponibles</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -286,6 +317,11 @@ const NuevasInscripciones = ({
                   <td className="fw-medium">{materia.materiaNombre}</td>
                   <td>
                     {mesa.nombre} - {new Date(mesa.fecha).toLocaleDateString()}
+                  </td>
+                  <td>
+                    <Badge bg={getEstadoColor(materia.estado)}>
+                      {materia.estado}
+                    </Badge>
                   </td>
                   <td>
                     <Button

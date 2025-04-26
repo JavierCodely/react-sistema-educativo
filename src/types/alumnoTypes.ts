@@ -18,8 +18,14 @@ export enum EstadoMateria {
   FALTA_CORRELATIVA = "Falta correlativa",
   REGULAR = "Regular",
   PROMOCION = "Promoción",
+  APROBADO = "Aprobado",
   LIBRE = "Libre",
   NO_CURSADO = "No cursado",
+}
+
+export interface Nota {
+  id: string;
+  nota: number;
 }
 
 export interface Materia {
@@ -27,6 +33,7 @@ export interface Materia {
   nombre: string;
   anio: number;
   estado: EstadoMateria;
+  notas: Nota[];
   codigo: string;
   correlativas?: string[];
   inscripcionExamen?: boolean;
@@ -41,6 +48,7 @@ export interface Mesa {
 export interface MesaDisponible {
   materiaId: string;
   materiaNombre: string;
+  estado: EstadoMateria;
   mesas: Mesa[];
 }
 
@@ -50,6 +58,7 @@ export interface InscripcionExamen {
   fecha: string;
   materiaNombre: string;
   mesaNombre: string;
+  estado: EstadoMateria;
 }
 
 // para la mierda del roadmap
