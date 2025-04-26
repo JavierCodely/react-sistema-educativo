@@ -17,7 +17,7 @@ export const estudianteMock: Estudiante[] = [
     materiasAprobadas: 10,
     promedio: 7.8,
     email: "alumno@ejemplo.com",
-    password: "1234",
+    password: "1234@admin", //hola si estas mirando el codigo xd
     role: "alumno",
   },
 ];
