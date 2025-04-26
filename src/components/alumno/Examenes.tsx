@@ -1,6 +1,6 @@
 // src/components/Examenes.tsx
 
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Table,
@@ -52,8 +52,6 @@ const getEstadoColor = (estado: EstadoMateria): string => {
   }
 };
 
-
-
 const Examenes = ({
   mesasDisponibles,
   inscripciones,
@@ -65,10 +63,16 @@ const Examenes = ({
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [inscripcionAEliminar, setInscripcionAEliminar] =
     useState<InscripcionExamen | null>(null);
+  const [inscripcionesLocales, setInscripcionesLocales] = useState<InscripcionExamen[]>(inscripciones);
+
+  // Actualizamos el estado local cuando cambian las inscripciones props
+  useEffect(() => {
+    setInscripcionesLocales(inscripciones);
+  }, [inscripciones]);
 
   // Filtrar las materias que ya están inscritas
   const materiasDisponibles = mesasDisponibles.filter(
-    (mesa) => !inscripciones.some((insc) => insc.materiaId === mesa.materiaId)
+    (mesa) => !inscripcionesLocales.some((insc) => insc.materiaId === mesa.materiaId)
   );
 
   // Función para manejar la inscripción al examen
@@ -77,12 +81,14 @@ const Examenes = ({
     const mesaId = values.mesaId;
     let materiaId: string | null = null;
     let materiaNombre: string | null = null;
+    let estado: EstadoMateria | null = null;
 
     for (const materia of materiasDisponibles) {
       const mesa = materia.mesas.find((m) => m.id === mesaId);
       if (mesa) {
         materiaId = materia.materiaId;
         materiaNombre = materia.materiaNombre;
+        estado = materia.estado;  // Preservamos el estado de la materia
         break;
       }
     }
@@ -93,9 +99,18 @@ const Examenes = ({
     setError(null);
 
     try {
-      await InscripcionesService.setInscribirExamen(materiaId, mesaId);
+      const nuevaInscripcion = await InscripcionesService.setInscribirExamen(materiaId, mesaId);
+      
+      // Si la API no devuelve el estado, usamos el que tenemos localmente
+      if (!nuevaInscripcion.estado && estado) {
+        nuevaInscripcion.estado = estado;
+      }
+      
+      // Actualizamos estado local para UI inmediata sin esperar refetch
+      setInscripcionesLocales(prev => [...prev, nuevaInscripcion]);
+      
       setExito(`Te has inscrito correctamente a ${materiaNombre}`);
-      onInscripcionActualizada();
+      onInscripcionActualizada(); // Actualizamos datos en el componente padre
     } catch (err) {
       setError("Error al realizar la inscripción. Inténtalo nuevamente.");
       console.error(err);
@@ -103,6 +118,7 @@ const Examenes = ({
       setCargando(false);
     }
   };
+
   // Función para confirmar desinscripción
   const confirmarDesinscripcion = (inscripcion: InscripcionExamen) => {
     setInscripcionAEliminar(inscripcion);
@@ -122,6 +138,15 @@ const Examenes = ({
         inscripcionAEliminar.materiaId,
         inscripcionAEliminar.mesaId
       );
+      
+      // Actualizamos estado local para UI inmediata
+      setInscripcionesLocales(prev => 
+        prev.filter(insc => 
+          !(insc.materiaId === inscripcionAEliminar.materiaId && 
+            insc.mesaId === inscripcionAEliminar.mesaId)
+        )
+      );
+      
       setExito(
         `Te has desinscrito correctamente de ${inscripcionAEliminar.materiaNombre}`
       );
@@ -159,15 +184,17 @@ const Examenes = ({
         />
 
         <InscripcionesActuales
-          inscripciones={inscripciones}
+          inscripciones={inscripcionesLocales}
           confirmarDesinscripcion={confirmarDesinscripcion}
           cargando={cargando}
+          getEstadoColor={getEstadoColor}
         />
 
         <NuevasInscripciones
           materiasDisponibles={materiasDisponibles}
           handleInscripcion={handleInscripcion}
           cargando={cargando}
+          getEstadoColor={getEstadoColor}
         />
 
         <ModalDesinscripcion
@@ -216,12 +243,14 @@ interface InscripcionesActualesProps {
   inscripciones: InscripcionExamen[];
   confirmarDesinscripcion: (inscripcion: InscripcionExamen) => void;
   cargando: boolean;
+  getEstadoColor: (estado: EstadoMateria) => string;
 }
 
 const InscripcionesActuales = ({
   inscripciones,
   confirmarDesinscripcion,
   cargando,
+  getEstadoColor,
 }: InscripcionesActualesProps) => (
   <section>
     <h5 className="mt-4 mb-3">Tus inscripciones actuales</h5>
@@ -247,9 +276,13 @@ const InscripcionesActuales = ({
               <td>{inscripcion.mesaNombre}</td>
               <td>{new Date(inscripcion.fecha).toLocaleDateString()}</td>
               <td>
-                <Badge bg={getEstadoColor(inscripcion.estado)}>
-                  {inscripcion.estado}
-                </Badge>
+                {inscripcion.estado ? (
+                  <Badge bg={getEstadoColor(inscripcion.estado)}>
+                    {inscripcion.estado}
+                  </Badge>
+                ) : (
+                  <Badge bg="secondary">PENDIENTE</Badge>
+                )}
               </td>
               <td>
                 <Button
@@ -272,22 +305,17 @@ const InscripcionesActuales = ({
 // Componente para nuevas inscripciones
 interface NuevasInscripcionesProps {
   materiasDisponibles: MesaDisponible[];
-  materiaSeleccionada: MesaDisponible | null;
-  setMateriaSeleccionada: (materia: MesaDisponible | null) => void;
   handleInscripcion: (values: { mesaId: string }) => void;
   cargando: boolean;
-  inscripcionSchema: any;
+  getEstadoColor: (estado: EstadoMateria) => string;
 }
 
 const NuevasInscripciones = ({
   materiasDisponibles,
   handleInscripcion,
   cargando,
-}: {
-  materiasDisponibles: MesaDisponible[];
-  handleInscripcion: (values: { mesaId: string }) => void;
-  cargando: boolean;
-}) => {
+  getEstadoColor,
+}: NuevasInscripcionesProps) => {
   // Función para manejar la inscripción directa
   const inscribirDirectamente = (materiaId: string, mesaId: string) => {
     handleInscripcion({ mesaId });
@@ -359,125 +387,6 @@ const NuevasInscripciones = ({
     </section>
   );
 };
-
-// Componente para la lista de materias disponibles
-interface ListaMateriasProps {
-  materias: MesaDisponible[];
-  onSeleccionar: (materia: MesaDisponible) => void;
-  cargando: boolean;
-}
-
-const ListaMaterias = ({
-  materias,
-  onSeleccionar,
-  cargando,
-}: ListaMateriasProps) => (
-  <Table responsive striped hover className="align-middle">
-    <thead>
-      <tr>
-        <th>Materia</th>
-        <th>Mesas disponibles</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {materias.map((materia) => (
-        <tr key={materia.materiaId}>
-          <td className="fw-medium">{materia.materiaNombre}</td>
-          <td>{materia.mesas.length}</td>
-          <td>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => onSeleccionar(materia)}
-              disabled={cargando}
-            >
-              Seleccionar mesa
-            </Button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-);
-
-// Componente para seleccionar una mesa
-interface SeleccionMesaProps {
-  materia: MesaDisponible;
-  onVolver: () => void;
-  onSubmit: (values: { mesaId: string }) => void;
-  cargando: boolean;
-  inscripcionSchema: any;
-}
-
-const SeleccionMesa = ({
-  materia,
-  onVolver,
-  onSubmit,
-  cargando,
-  inscripcionSchema,
-}: SeleccionMesaProps) => (
-  <div className="mt-3 p-3 border rounded shadow-sm">
-    <div className="d-flex justify-content-between align-items-center mb-3">
-      <h6 className="mb-0 fw-bold">{materia.materiaNombre}</h6>
-      <Button variant="outline-secondary" size="sm" onClick={onVolver}>
-        Volver
-      </Button>
-    </div>
-
-    <Formik
-      initialValues={{ mesaId: "" }}
-      validationSchema={inscripcionSchema}
-      onSubmit={onSubmit}
-    >
-      {({ errors, touched }) => (
-        <FormikForm>
-          <Form.Group className="mb-3">
-            <Form.Label>Selecciona una mesa</Form.Label>
-            <Field
-              as="select"
-              name="mesaId"
-              className={`form-select ${errors.mesaId && touched.mesaId ? "is-invalid" : ""}`}
-            >
-              <option value="">Seleccionar mesa</option>
-              {materia.mesas.map((mesa) => (
-                <option key={mesa.id} value={mesa.id}>
-                  {mesa.nombre} - {new Date(mesa.fecha).toLocaleDateString()}
-                </option>
-              ))}
-            </Field>
-            {errors.mesaId && touched.mesaId && (
-              <div className="invalid-feedback">{errors.mesaId}</div>
-            )}
-          </Form.Group>
-
-          <Button
-            type="submit"
-            variant="success"
-            disabled={cargando}
-            className="d-flex align-items-center"
-          >
-            {cargando ? (
-              <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
-                <span>Inscribiendo...</span>
-              </>
-            ) : (
-              "Inscribirse"
-            )}
-          </Button>
-        </FormikForm>
-      )}
-    </Formik>
-  </div>
-);
 
 // Componente para el modal de confirmación de desinscripción
 interface ModalDesinscripcionProps {
