@@ -27,7 +27,7 @@ const StudentCard: React.FC<StudentCardProps> = ({ estudiante }) => {
           </div>
           <div className="mb-3">
             <div className="text-muted small">Promedio</div>
-            <div className="fw-bold">{estudiante.promedio.toFixed(2)}</div>
+            <div className="fw-bold">{estudiante.promedio}</div>
           </div>
         </div>
       </Card.Body>

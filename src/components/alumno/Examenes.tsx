@@ -13,10 +13,11 @@ import {
 import { Formik, Form as FormikForm, Field } from "formik";
 import * as Yup from "yup";
 import { MesaDisponible, InscripcionExamen } from "../../types/alumnoTypes";
+
+//servicios de alumnos
 import {
-  inscribirExamen,
-  desinscribirExamen,
-} from "../../services/api/alumno/alumnosService";
+  InscripcionesService,
+} from "../../services/api/alumno/inscripcionesServices";
 
 interface ExamenesProps {
   mesasDisponibles: MesaDisponible[];
@@ -68,7 +69,7 @@ const Examenes = ({
     setError(null);
 
     try {
-      await inscribirExamen(materiaId, mesaId);
+      await InscripcionesService.setInscribirExamen(materiaId, mesaId);
       setExito(`Te has inscrito correctamente a ${materiaNombre}`);
       onInscripcionActualizada();
     } catch (err) {
@@ -93,7 +94,7 @@ const Examenes = ({
     setMostrarConfirmacion(false);
 
     try {
-      await desinscribirExamen(
+      await InscripcionesService.desinscribirExamen(
         inscripcionAEliminar.materiaId,
         inscripcionAEliminar.mesaId
       );

@@ -107,3 +107,74 @@
     border-right: none !important;
     border-bottom: none !important;
   }
+
+
+  /* Estilos para el componente de Roadmap */
+.roadmap-container {
+  padding: 20px;
+}
+
+.materia-card {
+  transition: all 0.3s ease;
+  height: 100%;
+  min-height: 120px;
+}
+
+.materia-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para las diferentes estados de las materias */
+.badge-promocion {
+  background-color: #28a745;
+}
+
+.badge-regular {
+  background-color: #007bff;
+}
+
+.badge-cursando {
+  background-color: #17a2b8;
+}
+
+.badge-libre {
+  background-color: #ffc107;
+}
+
+.badge-falta-correlativa {
+  background-color: #dc3545;
+}
+
+.badge-no-cursado {
+  background-color: #6c757d;
+}
+
+/* Agregar lineas conectoras para visualizar correlativas */
+.correlativa-linea {
+  position: absolute;
+  background-color: #ccc;
+  z-index: -1;
+}
+
+/* Estilos para el modal de detalles */
+.requisito-lista {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.requisito-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.requisito-cumplido {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-left: 5px solid #28a745;
+}
+
+.requisito-pendiente {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 5px solid #dc3545;
+}
