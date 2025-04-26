@@ -11,25 +11,23 @@ import {
   Modal,
   Badge,
 } from "react-bootstrap";
-import { Formik, Form as FormikForm, Field } from "formik";
-import * as Yup from "yup";
-import { MesaDisponible, InscripcionExamen, EstadoMateria } from "../../types/alumnoTypes";
+
+
+import {
+  MesaDisponible,
+  InscripcionExamen,
+  EstadoMateria,
+} from "../../types/alumnoTypes";
 
 //servicios de alumnos
-import {
-  InscripcionesService,
-} from "../../services/api/alumno/inscripcionesServices";
+import { InscripcionesService } from "../../services/api/alumno/inscripcionesServices";
 
 interface ExamenesProps {
   mesasDisponibles: MesaDisponible[];
   inscripciones: InscripcionExamen[];
-  onInscripcionActualizada: () => void;
+  onInscripcionActualizada: (nuevaInscripcion?: InscripcionExamen) => void;
 }
 
-// Esquema de validación para el formulario de inscripción
-const inscripcionSchema = Yup.object().shape({
-  mesaId: Yup.string().required("Debe seleccionar una mesa"),
-});
 
 // Función para obtener el color del badge según el estado de la materia
 const getEstadoColor = (estado: EstadoMateria): string => {
@@ -72,23 +70,28 @@ const Examenes = ({
 
   // Filtrar las materias que ya están inscritas
   const materiasDisponibles = mesasDisponibles.filter(
-    (mesa) => !inscripcionesLocales.some((insc) => insc.materiaId === mesa.materiaId)
+    (mesa) => !inscripciones.some((insc) => insc.materiaId === mesa.materiaId)
   );
 
   // Función para manejar la inscripción al examen
   const handleInscripcion = async (values: { mesaId: string }) => {
     // Encuentra la materia correspondiente al mesaId
+
     const mesaId = values.mesaId;
     let materiaId: string | null = null;
     let materiaNombre: string | null = null;
     let estado: EstadoMateria | null = null;
+    let mesaNombre: string | null = null;
+    let fecha: string | null = null;
 
     for (const materia of materiasDisponibles) {
       const mesa = materia.mesas.find((m) => m.id === mesaId);
       if (mesa) {
         materiaId = materia.materiaId;
         materiaNombre = materia.materiaNombre;
-        estado = materia.estado;  // Preservamos el estado de la materia
+        estado = materia.estado; // Preservamos el estado de la materia
+        mesaNombre = mesa.nombre;
+        fecha = mesa.fecha;
         break;
       }
     }
@@ -99,18 +102,24 @@ const Examenes = ({
     setError(null);
 
     try {
-      const nuevaInscripcion = await InscripcionesService.setInscribirExamen(materiaId, mesaId);
-      
-      // Si la API no devuelve el estado, usamos el que tenemos localmente
-      if (!nuevaInscripcion.estado && estado) {
-        nuevaInscripcion.estado = estado;
-      }
-      
-      // Actualizamos estado local para UI inmediata sin esperar refetch
-      setInscripcionesLocales(prev => [...prev, nuevaInscripcion]);
-      
+      // Realizamos la inscripción
+      await InscripcionesService.setInscribirExamen(materiaId, mesaId);
+
+      // Creamos manualmente la nueva inscripción con los datos que ya tenemos
+      const nuevaInscripcion: InscripcionExamen = {
+        materiaId,
+        mesaId,
+        materiaNombre,
+        mesaNombre: mesaNombre || "",
+        fecha: fecha || "",
+        estado: estado as EstadoMateria, // Usamos el estado que ya teníamos
+      };
+
+      // Llamamos a onInscripcionActualizada pasando la nueva inscripción
+      // (modificamos el tipo de la prop para que acepte este parámetro)
+      onInscripcionActualizada(nuevaInscripcion);
+
       setExito(`Te has inscrito correctamente a ${materiaNombre}`);
-      onInscripcionActualizada(); // Actualizamos datos en el componente padre
     } catch (err) {
       setError("Error al realizar la inscripción. Inténtalo nuevamente.");
       console.error(err);
@@ -138,15 +147,15 @@ const Examenes = ({
         inscripcionAEliminar.materiaId,
         inscripcionAEliminar.mesaId
       );
-      
+
       // Actualizamos estado local para UI inmediata
-      setInscripcionesLocales(prev => 
-        prev.filter(insc => 
-          !(insc.materiaId === inscripcionAEliminar.materiaId && 
+      setInscripcionesLocales(prev =>
+         prev.filter(insc =>
+          !(insc.materiaId === inscripcionAEliminar.materiaId &&
             insc.mesaId === inscripcionAEliminar.mesaId)
         )
       );
-      
+
       setExito(
         `Te has desinscrito correctamente de ${inscripcionAEliminar.materiaNombre}`
       );
@@ -161,12 +170,6 @@ const Examenes = ({
   };
 
   // Limpiar mensajes de éxito después de 5 segundos
-  useEffect(() => {
-    if (exito) {
-      const timer = setTimeout(() => setExito(null), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [exito]);
 
   return (
     <Card className="mb-4 shadow-sm">
@@ -184,7 +187,7 @@ const Examenes = ({
         />
 
         <InscripcionesActuales
-          inscripciones={inscripcionesLocales}
+          inscripciones={inscripciones}
           confirmarDesinscripcion={confirmarDesinscripcion}
           cargando={cargando}
           getEstadoColor={getEstadoColor}
