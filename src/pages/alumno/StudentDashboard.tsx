@@ -8,12 +8,17 @@ import Navbar from "../../components/alumno/Navbar";
 import Horarios from "../../components/alumno/Horarios";
 import TablaEstados from "../../components/alumno/TablaEstados";
 import RoadmapAcademico from "../../components/alumno/RoadmapAcademico";
-import {
-  getEstudiante,
-  getMaterias,
-  getMesasDisponibles,
-  getInscripciones,
-} from "../../services/api/alumno/alumnosService";
+
+//servicios de alumnos
+import { EstudianteService } from "../../services/api/alumno/estudianteService";
+import { MateriasService } from "../../services/api/alumno/materiasService";
+import { InscripcionesService } from "../../services/api/alumno/inscripcionesServices";
+import HorariosService from "../../services/api/alumno/HorariosServices";
+
+
+
+
+//tipos de alumnos
 import {
   Estudiante,
   Materia,
@@ -24,18 +29,19 @@ import {
 const StudentDashboard: React.FC = () => {
   // Estados para almacenar los datos
   const [seccionActiva, setSeccionActiva] = useState<
-    "inicio" | "horarios" | "examenes" | "correlativas" | "tabs"
+  "inicio" | "horarios" | "examenes" | "correlativas" | "tabs"
   >("inicio");
-  const [estudiante, setEstudiante] = useState<Estudiante | null>(null);
-  const [materias, setMaterias] = useState<Materia[]>([]);
+  const [horarios, setHorarios] = useState<any>({});
+  const [estudiante, setEstudiante] = useState<Estudiante | null>(null); // estudiante actual
+  const [materias, setMaterias] = useState<Materia[]>([]); // todas las materias
   const [mesasDisponibles, setMesasDisponibles] = useState<MesaDisponible[]>(
     []
-  );
-  const [inscripciones, setInscripciones] = useState<InscripcionExamen[]>([]);
+  ); // mesas disponibles
+  const [inscripciones, setInscripciones] = useState<InscripcionExamen[]>([]); // inscripciones actuales
 
   // Estados para manejar la carga y errores
-  const [cargando, setCargando] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [cargando, setCargando] = useState<boolean>(true); // cargando
+  const [error, setError] = useState<string | null>(null); // error
 
   // Función para cargar todos los datos
   const cargarDatos = async () => {
@@ -44,18 +50,20 @@ const StudentDashboard: React.FC = () => {
 
     try {
       // Cargar datos en paralelo para optimizar
-      const [estudianteData, materiasData, mesasData, inscripcionesData] =
+      const [estudianteData, materiasData, mesasData, inscripcionesData, horariosData] =
         await Promise.all([
-          getEstudiante(),
-          getMaterias(),
-          getMesasDisponibles(),
-          getInscripciones(),
+          EstudianteService.getEstudiante(),
+          MateriasService.getMaterias(),
+          InscripcionesService.getMesasDisponibles(),
+          InscripcionesService.getInscripciones(),
+          HorariosService.getHorarioMaterias(),
         ]);
-
+        console.log("Horarios data in StudentDashboard:", horariosData);
       setEstudiante(estudianteData);
       setMaterias(materiasData);
       setMesasDisponibles(mesasData);
       setInscripciones(inscripcionesData);
+      setHorarios(horariosData);
     } catch (err) {
       console.error("Error al cargar datos:", err);
       setError(
@@ -69,7 +77,7 @@ const StudentDashboard: React.FC = () => {
   // Función para recargar inscripciones cuando hay cambios
   const recargarInscripciones = async () => {
     try {
-      const inscripcionesData = await getInscripciones();
+      const inscripcionesData = await InscripcionesService.getInscripciones();
       setInscripciones(inscripcionesData);
     } catch (err) {
       console.error("Error al recargar inscripciones:", err);
@@ -119,14 +127,15 @@ const StudentDashboard: React.FC = () => {
       />
 
       <Container>
-        <StudentCard estudiante={estudiante} />
-
         {seccionActiva === "inicio" && (
-          <WelcomeSection nombreEstudiante={estudiante.nombre} />
+          <>
+            <StudentCard estudiante={estudiante} />
+            <WelcomeSection nombreEstudiante={estudiante.nombre} />
+          </>
         )}
 
-        {seccionActiva === "horarios" && <Horarios />}
-       
+        {seccionActiva === "horarios" && <Horarios horariosSemanal={horarios} />}
+
         {seccionActiva === "correlativas" && <RoadmapAcademico />}
 
         {/* Componente de pestañas extraído */}

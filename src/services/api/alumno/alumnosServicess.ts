@@ -27,7 +27,7 @@ const USE_MOCK = true;
 // Función para obtener los datos del estudiante
 export const getEstudiante = async (): Promise<Estudiante> => {
   if (USE_MOCK) {
-    return Promise.resolve(estudianteMock);
+    return Promise.resolve(estudianteMock[0]);
   }
 
   try {
