@@ -397,8 +397,8 @@ const NuevasInscripciones = ({
   };
 
   // Función para determinar si el botón debe estar desactivado
-  const isBotonDesactivado = (estado: EstadoMateria): boolean => {
-    return estado === EstadoMateria.FALTA_CORRELATIVA || cargando;
+  const isBotonDesactivado = (estado): boolean => {
+    return estado === 'falta' || cargando;
   };
 
   return (
