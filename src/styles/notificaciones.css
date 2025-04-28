@@ -1,0 +1,240 @@
+/* src/styles/notificaciones.css */
+
+/* Estilos para el botón de notificaciones */
+
+
+  
+  /* Estilo para los elementos de notificación */
+  .notification-item {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .notification-item:hover {
+    background-color: #f8f9fa;
+  }
+  
+  /* Estilo para notificaciones no leídas */
+  .notification-item.bg-light {
+    background-color: #e9f5ff !important;
+  }
+  
+  .notification-item.bg-light:hover {
+    background-color: #d8efff !important;
+  }
+  
+  /* Estilo para el scroll del dropdown */
+  .notification-body::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .notification-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .notification-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  
+  .notification-body::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+  }
+  
+  /* Badge de notificaciones */
+  .badge-notification {
+    font-size: 0.6rem;
+  }
+
+  /* src/styles/notificaciones.css */
+
+/* Estilos para el botón de notificaciones */
+.nav-link.bi-bell-fill {
+    position: relative;
+    transition: transform 0.2s ease;
+  }
+  
+  .nav-link.bi-bell-fill:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Animación de "campana sonando" para nuevas notificaciones */
+  @keyframes bellRing {
+    0% { transform: rotate(0); }
+    5% { transform: rotate(10deg); }
+    10% { transform: rotate(-10deg); }
+    15% { transform: rotate(8deg); }
+    20% { transform: rotate(-8deg); }
+    25% { transform: rotate(0); }
+    100% { transform: rotate(0); }
+  }
+  
+  .bell-animation {
+    animation: bellRing 2s ease infinite;
+    transform-origin: top center;
+  }
+  
+  /* Badge de notificaciones con animación de pulso */
+  .badge-notification {
+    font-size: 0.6rem;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .badge-pulse {
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* Estilo para los elementos de notificación */
+  .notification-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-left: 3px solid transparent;
+  }
+  
+  /* Efecto de hover más suave y elegante */
+  .notification-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    border-left: 3px solid #0d6efd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+  
+  /* Efecto de clic */
+  .notification-item:active {
+    transform: translateX(2px);
+  }
+  
+  /* Estilo para notificaciones no leídas */
+  .notification-item.unread {
+    background-color: #e9f5ff !important;
+    border-left: 3px solid #0d6efd;
+  }
+  
+  .notification-item.unread:hover {
+    background-color: #d8efff !important;
+  }
+  
+  /* Efecto de ripple al hacer clic */
+  .notification-item .ripple {
+    position: absolute;
+    background: rgba(13, 110, 253, 0.15);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+  }
+  
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  
+  /* Transición de entrada para las notificaciones nuevas */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .notification-new {
+    animation: fadeInDown 0.3s ease-out forwards;
+  }
+  
+  /* Transición de salida para eliminar notificaciones */
+  @keyframes fadeOutRight {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+  
+  .notification-delete {
+    animation: fadeOutRight 0.3s ease-out forwards;
+  }
+  
+  /* Estilo para el scroll del dropdown */
+  .notification-body {
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f1f1f1;
+  }
+  
+  .notification-body::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .notification-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  .notification-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+  
+  .notification-body::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+  }
+  
+  /* Animación para el dropdown */
+  .dropdown-menu.show {
+    animation: dropdown-fade 0.2s ease-out;
+  }
+  
+  @keyframes dropdown-fade {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Estilos para el botón 'Ver más información' */
+  .btn-link.see-more {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-link.see-more:hover {
+    text-decoration: none;
+    color: #0a58ca;
+  }
+  
+  .btn-link.see-more::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #0a58ca;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+  }
+  
+  .btn-link.see-more:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
