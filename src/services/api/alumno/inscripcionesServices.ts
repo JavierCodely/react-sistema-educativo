@@ -1,7 +1,7 @@
 // src/services/inscripcionesService.ts
 import { apiClient } from "../apiClient";
 import { MockService } from "../mockService";
-import { MesaDisponible, InscripcionExamen } from "../../../types/alumnoTypes";
+import { MesaDisponible, InscripcionExamen, EstadoMateria } from "../../../types/alumnoTypes";
 
 export const InscripcionesService = {
   //servicios de inscripciones
@@ -21,12 +21,13 @@ export const InscripcionesService = {
     return apiClient.get<InscripcionExamen[]>("/inscripciones");
   },
   //servicios de inscripciones
-  setInscribirExamen: async (materiaId: string, mesaId: string): Promise<InscripcionExamen> => {
+  setInscribirExamen: async (materiaId: string, mesaId: string, estado?: EstadoMateria): Promise<InscripcionExamen> => {
     if (apiClient.isMockEnabled()) {
-      return Promise.resolve(MockService.inscribirExamen(materiaId, mesaId));
+      return Promise.resolve(MockService.inscribirExamen(materiaId, mesaId, estado));
     }
     
-    return apiClient.post<InscripcionExamen>("/inscripciones", { materiaId, mesaId });
+    // Incluimos el estado en el cuerpo de la petición
+    return apiClient.post<InscripcionExamen>("/inscripciones", { materiaId, mesaId, estado });
   },
   //servicios de inscripciones
   desinscribirExamen: async (materiaId: string, mesaId: string): Promise<void> => {

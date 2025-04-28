@@ -338,6 +338,15 @@ export const mesasDisponiblesMock: MesaDisponible[] = [
       { id: "m2-ing2", nombre: "Mesa 2", fecha: "2025-06-03" },
     ],
   },
+  {
+    materiaId: "15",
+    materiaNombre: "Derecho y Legislación Laboral",
+    estado: EstadoMateria.FALTA_CORRELATIVA,
+    mesas: [
+      { id: "m1-dll", nombre: "Mesa 1", fecha: "2025-05-22" },
+      { id: "m2-dll", nombre: "Mesa 2", fecha: "2025-06-05" },
+    ],
+  },
 ];
 
 export const inscripcionesMock: InscripcionExamen[] = [
