@@ -93,7 +93,7 @@ export const materiasMock: Materia[] = [
     id: "6",
     nombre: "Comunicación",
     anio: 1,
-    estado: EstadoMateria.APROBADO,
+    estado: EstadoMateria.LIBRE,
     codigo: "COM",
     notas: [
       {
