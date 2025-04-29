@@ -1,31 +1,31 @@
 import React, { useState } from "react";
 import { Row, Col, Tab, Nav } from "react-bootstrap";
 import MateriasPorAnio from "./MateriasPorAnio";
-import Examenes from "./Examenes";
+import Examenes from "./Examenes/Examenes";
 import { Materia, MesaDisponible, InscripcionExamen } from "../../types/alumnoTypes";
 
 interface TablaEstadosProps {
-  materias: Materia[];
-  mesasDisponibles: MesaDisponible[];
-  inscripciones: InscripcionExamen[];
-  onInscripcionActualizada: () => Promise<void>;
+  materias: Materia[]; // Materias del alumno
+  mesasDisponibles: MesaDisponible[]; // Mesas disponibles para inscripción
+  inscripciones: InscripcionExamen[]; // Inscripciones del alumno
+  onInscripcionActualizada: () => Promise<void>; // Función para actualizar las inscripciones
 }
 
 const TablaEstados: React.FC<TablaEstadosProps> = ({
-  materias,
-  mesasDisponibles,
-  inscripciones,
-  onInscripcionActualizada,
+  materias, // Materias del alumno
+  mesasDisponibles, // Mesas disponibles para inscripción
+  inscripciones, // Inscripciones del alumno
+  onInscripcionActualizada, // Función para actualizar las inscripciones
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("materias");
+  const [activeTab, setActiveTab] = useState<string>("materias"); // Estado del tab activo
 
   return (
     <Row>
       <Col>
         <Tab.Container
-          id="student-tabs"
-          activeKey={activeTab}
-          onSelect={(k) => k && setActiveTab(k)}
+          id="student-tabs" 
+          activeKey={activeTab} // Tab activo
+          onSelect={(k) => k && setActiveTab(k)} // Función para cambiar el tab activo
         >
           <Nav variant="pills" fill className="mb-3">
             <Nav.Item>

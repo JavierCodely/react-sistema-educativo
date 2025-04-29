@@ -17,6 +17,7 @@ import {
     MesaDisponible,
     InscripcionExamen,
     PlanEstudio,
+    EstadoMateria,
     RequisitosMateria
   } from "../../types/alumnoTypes";
   
@@ -29,23 +30,24 @@ import {
     
     getInscripciones: (): InscripcionExamen[] => inscripcionesMock,
     
-    inscribirExamen: (materiaId: string, mesaId: string): InscripcionExamen => {
+    inscribirExamen: (materiaId: string, mesaId: string, estado?: EstadoMateria): InscripcionExamen => {
       const mesaDisponible = mesasDisponiblesMock.find(
         (m) => m.materiaId === materiaId
       );
       if (!mesaDisponible) throw new Error("Materia no encontrada");
-  
+    
       const mesa = mesaDisponible.mesas.find((m) => m.id === mesaId);
       if (!mesa) throw new Error("Mesa no encontrada");
-  
+    
       const nuevaInscripcion: InscripcionExamen = {
         materiaId,
         mesaId,
         fecha: mesa.fecha,
+        estado: estado || mesaDisponible.estado, // Usa el estado proporcionado o el de la mesa disponible
         materiaNombre: mesaDisponible.materiaNombre,
         mesaNombre: mesa.nombre,
       };
-  
+    
       inscripcionesMock.push(nuevaInscripcion);
       return nuevaInscripcion;
     },

@@ -93,7 +93,7 @@ export const materiasMock: Materia[] = [
     id: "6",
     nombre: "Comunicación",
     anio: 1,
-    estado: EstadoMateria.APROBADO,
+    estado: EstadoMateria.LIBRE,
     codigo: "COM",
     notas: [
       {
@@ -336,6 +336,15 @@ export const mesasDisponiblesMock: MesaDisponible[] = [
     mesas: [
       { id: "m1-ing2", nombre: "Mesa 1", fecha: "2025-05-20" },
       { id: "m2-ing2", nombre: "Mesa 2", fecha: "2025-06-03" },
+    ],
+  },
+  {
+    materiaId: "15",
+    materiaNombre: "Derecho y Legislación Laboral",
+    estado: EstadoMateria.FALTA_CORRELATIVA,
+    mesas: [
+      { id: "m1-dll", nombre: "Mesa 1", fecha: "2025-05-22" },
+      { id: "m2-dll", nombre: "Mesa 2", fecha: "2025-06-05" },
     ],
   },
 ];

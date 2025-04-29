@@ -1,7 +1,6 @@
 // src/components/Horarios.tsx
 import React, { useState, useEffect } from "react";
 import HorariosService from "../../services/api/alumno/HorariosServices";
-
 import {
   Button,
   Container,
@@ -11,13 +10,16 @@ import {
   Form,
   Card,
 } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 interface HorariosProps {
   horariosSemanal: any;
 }
 
 const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
-  const [anioSeleccionado, setAnioSeleccionado] = useState<number | undefined>(undefined);
+  const [anioSeleccionado, setAnioSeleccionado] = useState<number | undefined>(
+    undefined
+  );
   const [horarioSemanal, setHorarioSemanal] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [dias, setDias] = useState<any[]>([]);
@@ -34,7 +36,7 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
       const [diasData, modulosData, horariosData] = await Promise.all([
         HorariosService.getDiasSemana(),
         HorariosService.getModulosHorarios(),
-        HorariosService.generarHorarioSemanal(anioSeleccionado)
+        HorariosService.generarHorarioSemanal(anioSeleccionado),
       ]);
 
       setDias(diasData);
@@ -76,7 +78,7 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
           <div key={index} className="p-1">
             <strong>{materia.materiaNombre}</strong>
             <br />
-            <small>Prof. {materia.profesor}</small>
+            <span className="small">Prof. {materia.profesor}</span>
           </div>
         ))}
       </td>
@@ -137,9 +139,7 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
                             <br />
                             <small>Módulo {modulo.id}</small>
                           </td>
-                          {dias.map((dia) =>
-                            renderCelda(modulo.id, dia.id)
-                          )}
+                          {dias.map((dia) => renderCelda(modulo.id, dia.id))}
                         </tr>
                       ))}
                     </tbody>
