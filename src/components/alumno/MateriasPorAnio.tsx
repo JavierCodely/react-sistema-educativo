@@ -37,16 +37,21 @@ const MateriasPorAnio: React.FC<MateriasPorAnioProps> = ({ materias }) => {
   useEffect(() => {
     // Agrupar materias por año
     const agrupadas = materias.reduce<Record<number, Materia[]>>(
+      //creamos el objeto para agrupar las materias por año
       (acc, materia) => {
+        //si no existe el año, creamos el array
         if (!acc[materia.anio]) {
+          //creamos el array
           acc[materia.anio] = [];
         }
+        //añadimos la materia al array
         acc[materia.anio].push(materia);
+        //retornamos el objeto
         return acc;
       },
       {}
     );
-
+    
     setMateriasPorAnio(agrupadas);
   }, [materias]);
 

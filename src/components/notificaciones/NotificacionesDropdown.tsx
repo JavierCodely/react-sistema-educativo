@@ -20,13 +20,17 @@ const NotificacionesDropdown: React.FC = () => {
   
   // Añadir animación de campana cuando hay notificaciones nuevas
   useEffect(() => {
+    //si hay notificaciones nuevas y la campana esta referenciada, añadimos la animación
     if (notificacionesNoLeidas > 0 && bellRef.current) {
+      //añadimos la animación
       bellRef.current.classList.add('bell-animation');
     } else if (bellRef.current) {
+      //si la campana esta referenciada, eliminamos la animación
       bellRef.current.classList.remove('bell-animation');
     }
-  }, [notificacionesNoLeidas]);
+  }, [notificacionesNoLeidas]);//dependemos de las notificaciones no leidas
 
+  //creamos el dropdown para las notificaciones
   return (
     <NavDropdown
       title={

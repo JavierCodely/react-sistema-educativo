@@ -16,10 +16,13 @@ interface HorariosProps {
   horariosSemanal: any;
 }
 
+//creamos el componente para los horarios
 const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
+  //creamos el estado para el año seleccionado
   const [anioSeleccionado, setAnioSeleccionado] = useState<number | undefined>(
     undefined
   );
+  //creamos el estado para el horario semanal
   const [horarioSemanal, setHorarioSemanal] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [dias, setDias] = useState<any[]>([]);
@@ -30,9 +33,10 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
   }, [anioSeleccionado]);
 
   const cargarDatos = async () => {
+    //seteamos el loading a true
     setLoading(true);
     try {
-      // Cargar datos en paralelo
+      // Cargamos los datos en paralelo
       const [diasData, modulosData, horariosData] = await Promise.all([
         HorariosService.getDiasSemana(),
         HorariosService.getModulosHorarios(),
@@ -49,22 +53,30 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
     }
   };
 
+  //creamos la funcion para exportar el horario a PDF
   const handleExportarPDF = () => {
+    //exportamos el horario a PDF
     HorariosService.exportarAPDF(anioSeleccionado);
   };
 
   const handleCambioAnio = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //obtenemos el valor del año seleccionado
     const valor = e.target.value;
+    //seteamos el año seleccionado
     setAnioSeleccionado(valor === "" ? undefined : parseInt(valor));
   };
 
+  //creamos la funcion para renderizar las celdas
   const renderCelda = (modulo: number, dia: number) => {
+    //si no existe el horario semanal o no existe el dia, retornamos una celda vacia
     if (!horarioSemanal[modulo] || !horarioSemanal[modulo][dia]) {
       return <td key={`${modulo}-${dia}`}></td>;
     }
 
+    //obtenemos las materias del modulo
     const materiasDelModulo = horarioSemanal[modulo][dia];
 
+    //si no existen materias, retornamos una celda vacia
     if (materiasDelModulo.length === 0) {
       return <td key={`${modulo}-${dia}`}></td>;
     }
@@ -72,6 +84,7 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
     return (
       <td
         key={`${modulo}-${dia}`}
+        //si existen materias, retornamos una celda con el color de fondo
         className={materiasDelModulo.length > 0 ? "bg-light" : ""}
       >
         {materiasDelModulo.map((materia: any, index: number) => (
@@ -86,9 +99,13 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
   };
 
   return (
+    //creamos el contenedor para los horarios
     <Container fluid className="mt-4">
+      //creamos el row para los horarios
       <Row className="mb-4">
+        //creamos el col para los horarios
         <Col>
+          //creamos el card para los horarios
           <Card>
             <Card.Header as="h5">Horarios de Clases</Card.Header>
             <Card.Body>
@@ -113,7 +130,7 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
                   </Button>
                 </Col>
               </Row>
-
+              {/* si esta cargando, mostramos un mensaje de cargando */}
               {loading ? (
                 <div className="text-center p-5">
                   <div className="spinner-border text-primary" role="status">
@@ -131,14 +148,17 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
                         ))}
                       </tr>
                     </thead>
+                    {/* creamos el tbody para los horarios */}
                     <tbody>
                       {modulos.map((modulo) => (
                         <tr key={modulo.id}>
+                          {/* creamos el td para el horario */}
                           <td className="bg-light">
                             <strong>{`${modulo.horaInicio} - ${modulo.horaFin}`}</strong>
                             <br />
                             <small>Módulo {modulo.id}</small>
                           </td>
+                          {/* creamos el td para los dias */}
                           {dias.map((dia) => renderCelda(modulo.id, dia.id))}
                         </tr>
                       ))}
@@ -158,14 +178,17 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
             <Card.Header as="h6">Referencias</Card.Header>
             <Card.Body>
               <div className="d-flex gap-4">
+                {/* creamos el div para el primer año */}
                 <div>
                   <span className="badge bg-primary me-2">1º</span>
                   <span>Primer Año</span>
                 </div>
+                {/* creamos el div para el segundo año */}
                 <div>
                   <span className="badge bg-success me-2">2º</span>
                   <span>Segundo Año</span>
                 </div>
+                {/* creamos el div para el tercer año */}
                 <div>
                   <span className="badge bg-warning me-2">3º</span>
                   <span>Tercer Año</span>
