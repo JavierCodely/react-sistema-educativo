@@ -5,6 +5,13 @@ import StudentDashboard from "./pages/alumno/StudentDashboard";
 import ProtectedRoute from "./routes/protectedRoute";
 import NotificacionesPage from "./pages/notificaciones/NotificacionesPage";
 import { NotificacionesProvider } from "./contexts/NotificacionesContext";
+
+useEffect(() => {
+  document.documentElement.setAttribute("data-bs-theme", "light");
+  document.body.classList.remove("bg-dark", "text-white");
+  document.body.classList.add("bg-light", "text-dark");
+}, []);
+
 function App() {
   return (
     <NotificacionesProvider>
