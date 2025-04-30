@@ -8,11 +8,12 @@ import {
   NavDropdown,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import NotificacionesDropdown from "../notificaciones/NotificacionesDropdown";
 
 interface NavbarProps {
   nombreEstudiante: string;
   onNavegar: (
-    seccion: "inicio" | "horarios" | "examenes" | "correlativas" | "tabs"
+    seccion: "inicio" | "horarios" | "examenes" | "correlativas" | "tabs" | "notificaciones"
   ) => void;
 }
 
@@ -31,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({ nombreEstudiante, onNavegar }) => {
 
   // Función que maneja la navegación y cierra el navbar
   const handleNavigation = (
-    seccion: "inicio" | "horarios" | "examenes" | "correlativas" | "tabs"
+    seccion: "inicio" | "horarios" | "examenes" | "correlativas" | "tabs" | "notificaciones"
   ) => {
     onNavegar(seccion);
 
@@ -77,7 +78,13 @@ const Navbar: React.FC<NavbarProps> = ({ nombreEstudiante, onNavegar }) => {
             </NavDropdown>
           </Nav>
           <Nav>
+            {/* Componente de Notificaciones */}
+            <NotificacionesDropdown 
+
+            />
+            
             <NavDropdown
+              
               title={
                 <span>
                   <i className="bi bi-person-circle me-1"></i>

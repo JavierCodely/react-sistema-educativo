@@ -91,8 +91,10 @@ const Examenes = ({
           fecha: mesa.fecha,
           estado: materia.estado,
         };
-        // Actualizar las inscripciones locales
-        setInscripcionesLocales((prev) => [...prev, nuevaInscripcion]);
+        // Actualizar las inscripciones locales si no existe la materia
+        if (!inscripcionesLocales.some((insc) => insc.materiaId === materia.materiaId)) {
+          setInscripcionesLocales((prev) => [...prev, nuevaInscripcion]);//Actualizar las inscripciones locales
+        }
         // Actualizar las inscripciones en el servidor
         onInscripcionActualizada(nuevaInscripcion);
         // Mostrar el mensaje de éxito
@@ -132,9 +134,9 @@ const Examenes = ({
       setInscripcionesLocales((prev) =>
         // Filtrar las inscripciones locales para eliminar la inscripción a eliminar
         prev.filter(
-          
           (insc) =>
             !(
+              // Si la inscripción a eliminar es la misma que la inscripción actual, eliminarla
               insc.materiaId === inscripcionAEliminar.materiaId &&
               insc.mesaId === inscripcionAEliminar.mesaId
             )
