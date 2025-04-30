@@ -1,6 +1,4 @@
-
-
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Card } from "react-bootstrap";
 
 // Tipos
@@ -38,24 +36,11 @@ const Examenes = ({
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false); // Indica si se está mostrando la confirmación de desinscripción
   const [inscripcionAEliminar, setInscripcionAEliminar] =
     useState<InscripcionExamen | null>(null); // Inscripción a eliminar
-  const [inscripcionesLocales, setInscripcionesLocales] =
-    useState(inscripciones); // Inscripciones locales
-  const [isLocalUpdate, setIsLocalUpdate] = useState(false); // Indica si se está actualizando las inscripciones locales
 
-  // Actualizar inscripciones locales solo cuando sea necesario
-  useEffect(() => {
-    // Actualizar las inscripciones locales solo cuando sea necesario
-    if (
-      !isLocalUpdate &&
-      inscripciones.length !== inscripcionesLocales.length
-    ) {
-      setInscripcionesLocales(inscripciones); // Actualizar las inscripciones locales
-    }
-    setIsLocalUpdate(false); // Reiniciar el estado de actualización local
-  }, [inscripciones, isLocalUpdate]); 
-
+  // Usamos directamente las props para el renderizado
+  // Sin estado local para inscripciones
   
-  // Filtrar las mesas disponibles que no están inscritas en el alumno
+  // Filtrar las mesas disponibles que no están inscritas por el alumno
   const materiasDisponibles = mesasDisponibles.filter(
     (mesa) => !inscripciones.some((insc) => insc.materiaId === mesa.materiaId)
   );
@@ -63,7 +48,6 @@ const Examenes = ({
   // Inscripción
   const handleInscripcion: InscripcionHandler = useCallback(
     async ({ mesaId }) => {
-      
       const materia = mesasDisponibles.find((m) =>
         m.mesas.some((mesa) => mesa.id === mesaId) // Encontrar la materia disponible que tiene la mesa
       );
@@ -82,6 +66,7 @@ const Examenes = ({
           mesa.id,
           materia.estado
         );
+        
         // Crear una nueva inscripción
         const nuevaInscripcion = {
           materiaId: materia.materiaId,
@@ -91,12 +76,10 @@ const Examenes = ({
           fecha: mesa.fecha,
           estado: materia.estado,
         };
-        // Actualizar las inscripciones locales si no existe la materia
-        if (!inscripcionesLocales.some((insc) => insc.materiaId === materia.materiaId)) {
-          setInscripcionesLocales((prev) => [...prev, nuevaInscripcion]);//Actualizar las inscripciones locales
-        }
-        // Actualizar las inscripciones en el servidor
+        
+        // Actualizar las inscripciones solo a través del padre
         onInscripcionActualizada(nuevaInscripcion);
+        
         // Mostrar el mensaje de éxito
         setExito(MENSAJES.EXITO_INSCRIPCION(materia.materiaNombre));
       } catch (err) {
@@ -130,23 +113,12 @@ const Examenes = ({
         inscripcionAEliminar.materiaId,
         inscripcionAEliminar.mesaId
       );
-      // Actualizar las inscripciones locales
-      setInscripcionesLocales((prev) =>
-        // Filtrar las inscripciones locales para eliminar la inscripción a eliminar
-        prev.filter(
-          (insc) =>
-            !(
-              // Si la inscripción a eliminar es la misma que la inscripción actual, eliminarla
-              insc.materiaId === inscripcionAEliminar.materiaId &&
-              insc.mesaId === inscripcionAEliminar.mesaId
-            )
-        )
-      );
 
       setExito(
         MENSAJES.EXITO_DESINSCRIPCION(inscripcionAEliminar.materiaNombre)
       );
-      // Actualizar las inscripciones en el servidor
+      
+      // Actualizar las inscripciones en el componente padre
       onInscripcionActualizada();
     } catch (err) {
       setError(MENSAJES.ERROR_DESINSCRIPCION);
@@ -173,7 +145,7 @@ const Examenes = ({
         />
 
         <MemoizedInscripcionesActuales
-          inscripciones={inscripcionesLocales}
+          inscripciones={inscripciones} // Usamos directamente las props
           confirmarDesinscripcion={confirmarDesinscripcion}
           cargando={cargando}
           getEstadoColor={getEstadoColor}
