@@ -9,55 +9,70 @@ interface NotificacionItemProps {
   onMarcarLeida: (id: string) => void;
   onEliminar: (id: string) => void;
 }
-
+//creamos el componente para las notificaciones
 const NotificacionItem: React.FC<NotificacionItemProps> = ({ 
   notificacion, 
   onMarcarLeida,
   onEliminar
 }) => {
+  //creamos el navigate para la navegación
   const navigate = useNavigate();
+  //creamos el ref para el item
   const itemRef = useRef<HTMLDivElement>(null);
+  //creamos el estado para la eliminación
   const [isDeleting, setIsDeleting] = useState(false);
+  //creamos el estado para la nueva notificación
   const [isNew] = useState(!notificacion.leida);
   
   // Efecto para aplicar animación cuando el componente se monta
   useEffect(() => {
+    //si la notificación es nueva y el item esta referenciado, añadimos la animación
     if (isNew && itemRef.current) {
+      //añadimos la animación
       itemRef.current.classList.add('notification-new');
     }
-  }, [isNew]);
+  }, [isNew]);//dependemos de la nueva notificación
 
-  // Crear efecto de ripple al hacer clic
+  //creamos el efecto de ripple al hacer clic
   const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
+    //obtenemos el boton
     const button = event.currentTarget;
+    //creamos el ripple
     const ripple = document.createElement("span");
+    //obtenemos el rectangulo del boton
     const rect = button.getBoundingClientRect();
-    
+    //obtenemos el tamaño del boton
     const size = Math.max(rect.width, rect.height);
+    //obtenemos la posicion x del boton
     const x = event.clientX - rect.left - size / 2;
+    //obtenemos la posicion y del boton
     const y = event.clientY - rect.top - size / 2;
-    
+    //seteamos el tamaño del ripple
     ripple.style.width = ripple.style.height = `${size}px`;
+    //seteamos la posicion x del ripple
     ripple.style.left = `${x}px`;
+    //seteamos la posicion y del ripple
     ripple.style.top = `${y}px`;
+    //añadimos la clase ripple
     ripple.className = "ripple";
-    
-    // Eliminar ripple anterior si existe
+    //eliminamos el ripple anterior si existe
     const existingRipple = button.querySelector(".ripple");
     if (existingRipple) {
+      //eliminamos el ripple anterior
       existingRipple.remove();
     }
-    
+    //añadimos el ripple al boton
     button.appendChild(ripple);
-    
-    // Eliminar el ripple después de la animación
+    //eliminamos el ripple despues de la animación
     setTimeout(() => {
+      //eliminamos el ripple
       ripple.remove();
     }, 600);
   };
 
-  // Obtener el color del badge según el tipo de notificación
+  //creamos la funcion para obtener el color del badge según el tipo de notificación
   const getBadgeColor = (tipo: TipoNotificacion) => {
+    //dependiendo del tipo de notificación, retornamos el color
     switch (tipo) {
       case TipoNotificacion.ACADEMICO:
         return 'info';
@@ -74,7 +89,9 @@ const NotificacionItem: React.FC<NotificacionItemProps> = ({
 
   // Formatear la fecha
   const formatearFecha = (fechaString: string) => {
+    //creamos la fecha
     const fecha = new Date(fechaString);
+    //retornamos la fecha formateada
     return fecha.toLocaleDateString('es-AR', {
       day: '2-digit',
       month: '2-digit',
@@ -83,32 +100,34 @@ const NotificacionItem: React.FC<NotificacionItemProps> = ({
     });
   };
 
-  // Manejar el clic en la notificación
+  //creamos la funcion para manejar el clic en la notificación
   const handleClick = () => {
+    //si la notificación no esta leida, marcamos como leida
     if (!notificacion.leida) {
       onMarcarLeida(notificacion.id);
     }
-    
+    //si la notificación tiene un link, navegamos a ese link
     if (notificacion.link) {
       navigate(notificacion.link);
     }
   };
   
-  // Manejar la eliminación con animación
+  //creamos la funcion para manejar la eliminación con animación
   const handleDelete = (e: React.MouseEvent) => {
+    //detenemos la propagación del evento
     e.stopPropagation();
-    
+    //si el item esta referenciado, seteamos la eliminación a true
     if (itemRef.current) {
       setIsDeleting(true);
-      
-      // Añadir clase de animación
+      //añadimos la clase de animación
       itemRef.current.classList.add('notification-delete');
-      
-      // Eliminar después de que termine la animación
+      //eliminamos el item despues de que termine la animación
       setTimeout(() => {
+        //eliminamos la notificación
         onEliminar(notificacion.id);
       }, 280);
     } else {
+      //eliminamos la notificación
       onEliminar(notificacion.id);
     }
   };

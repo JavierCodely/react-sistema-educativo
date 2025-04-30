@@ -19,9 +19,13 @@ const NotificacionesPage: React.FC = () => {
   // Función para cargar las notificaciones
   const cargarNotificaciones = async () => {
     try {
+      //seteamos el loading a true
       setLoading(true);
+      //obtenemos las notificaciones
       const data = await NotificacionesService.getNotificaciones();
+      //seteamos las notificaciones
       setNotificaciones(data);
+      //seteamos el error a null
       setError(null);
     } catch (err) {
       setError('Error al cargar las notificaciones');
@@ -34,9 +38,13 @@ const NotificacionesPage: React.FC = () => {
   // Marcar una notificación como leída
   const marcarComoLeida = async (id: string) => {
     try {
+      //marcamos la notificación como leída
       await NotificacionesService.marcarComoLeida(id);
+      //seteamos las notificaciones
       setNotificaciones(prev => 
+        //mapeamos las notificaciones
         prev.map(notif => 
+          //si la notificación es la que queremos marcar como leída, la marcamos como leída
           notif.id === id ? { ...notif, leida: true } : notif
         )
       );
@@ -48,9 +56,13 @@ const NotificacionesPage: React.FC = () => {
   // Marcar todas las notificaciones como leídas
   const marcarTodasComoLeidas = async () => {
     try {
+      //marcamos todas las notificaciones como leídas
       await NotificacionesService.marcarTodasComoLeidas();
+      //seteamos las notificaciones
       setNotificaciones(prev => 
-        prev.map(notif => ({ ...notif, leida: true }))
+        //mapeamos las notificaciones
+        prev.map(notif => 
+          ({ ...notif, leida: true }))
       );
     } catch (err) {
       console.error('Error al marcar todas como leídas:', err);
@@ -60,8 +72,15 @@ const NotificacionesPage: React.FC = () => {
   // Eliminar una notificación
   const eliminarNotificacion = async (id: string) => {
     try {
+      //eliminamos la notificación
       await NotificacionesService.eliminarNotificacion(id);
-      setNotificaciones(prev => prev.filter(notif => notif.id !== id));
+      //seteamos las notificaciones
+      setNotificaciones(prev => 
+        //filtramos las notificaciones
+        prev.filter(notif => 
+          //si la notificación es la que queremos eliminar, la eliminamos
+          notif.id !== id)
+      );
     } catch (err) {
       console.error('Error al eliminar notificación:', err);
     }
@@ -70,7 +89,10 @@ const NotificacionesPage: React.FC = () => {
   // Filtrar notificaciones según el filtro activo
   const notificacionesFiltradas = filtroActivo === 'TODAS' 
     ? notificaciones 
-    : notificaciones.filter(n => n.tipo === filtroActivo);
+    : notificaciones.filter(n => 
+      //filtramos las notificaciones según el filtro activo
+      n.tipo === filtroActivo
+    );
 
   return (
     <Container>
