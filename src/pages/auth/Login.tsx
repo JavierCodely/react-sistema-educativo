@@ -99,7 +99,7 @@ const Login = () => {
       );
       const user = {
         dni: mockUser.dni,
-        name: mockUser.name,
+        name: mockUser.nombre,
         email: mockUser.email,
         role: mockUser.role,
       };

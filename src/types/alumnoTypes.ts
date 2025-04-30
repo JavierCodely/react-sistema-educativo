@@ -1,9 +1,8 @@
 // src/types/alumnoTypes.ts
 
 export interface Estudiante {
-  id: string;
+  dni: number;
   nombre: string;
-  apellido: string;
   carrera: string;
   cursando: number;
   email: string;

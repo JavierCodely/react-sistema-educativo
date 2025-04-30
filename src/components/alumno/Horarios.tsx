@@ -99,13 +99,13 @@ const Horarios: React.FC<HorariosProps> = ({ horariosSemanal }) => {
   };
 
   return (
-    //creamos el contenedor para los horarios
+    
     <Container fluid className="mt-4">
-      //creamos el row para los horarios
+      
       <Row className="mb-4">
-        //creamos el col para los horarios
+       
         <Col>
-          //creamos el card para los horarios
+          
           <Card>
             <Card.Header as="h5">Horarios de Clases</Card.Header>
             <Card.Body>
