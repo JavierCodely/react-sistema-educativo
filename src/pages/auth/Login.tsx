@@ -1,14 +1,15 @@
+// src/pages/auth/Login.tsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { EnvelopeFill, LockFill, PersonFill } from "react-bootstrap-icons";
+import { EnvelopeFill, LockFill } from "react-bootstrap-icons";
 import "../../styles/Login.css";
-import { loginMock } from "../../services/auth/authServices";
 import { useAuth } from "../../contexts/authContext";
+import { supabase } from "../../services/auth/supabase/supabaseClient";
+
 /**
  * Componente de inicio de sesión
  *
- * Este componente permite a los usuarios autenticarse en el sistema,
- * con la opción de seleccionar su rol (alumno, profesor o preceptor).
+ * Este componente permite a los usuarios autenticarse en el sistema.
  */
 const Login = () => {
   const navigate = useNavigate();
@@ -16,49 +17,13 @@ const Login = () => {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [debugInfo, setDebugInfo] = useState<any>(null);
   const [loginData, setLoginData] = useState({
-    dni: "",
-    name: "",
     email: "",
-    password: "",
-    role: "alumno", // Valor por defecto
+    password: ""
   });
-  const { login } = useAuth(); // obtenemos la función login
-  {
-    /* Función para manejar el inicio de sesión con Google */
-  }
-  console.log(email);
+  const { login } = useAuth(); // obtenemos la función login del contexto
 
-  const handleGoogleLogin = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-
-      // Ala implementación de la autenticación con Google
-      // Por ejemplo, utilizando Firebase Authentication u otro servicio
-
-      // Ejemplo simulado:
-      // const result = await firebaseAuth.signInWithPopup(googleProvider);
-      // const user = result.user;
-
-      // Simulación de respuesta exitosa
-      setSuccessMessage("Inicio de sesión con Google exitoso");
-      // Navigate al dashboard según el rol seleccionado
-      // navigate(`/${loginData.role}/dashboard`);
-    } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error);
-      setError("Error al iniciar sesión con Google. Intente nuevamente.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Datos del login
-
-  /**
-   * Maneja los cambios en los campos del formulario
-   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setLoginData((prev) => ({ ...prev, [name]: value }));
@@ -69,54 +34,111 @@ const Login = () => {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    e.preventDefault();
-    const form = e.target;
-
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      // Si pasa la validación, continúa con el login
-      console.log("Formulario válido");
-    }
-
     setFormValidated(true);
-    // Validación básica
-    if (!loginData.email || !loginData.password || !loginData.role) {
+    setError("");
+    setSuccessMessage("");
+    setDebugInfo(null);
+  
+    if (!loginData.email || !loginData.password) {
       setError("Por favor completa todos los campos");
-
+      return;
+    }
+  
+    if (!loginData.email.endsWith("@its.edu.ar")) {
+      setError("Solo se permite correo institucional (@its.edu.ar)");
       return;
     }
 
     setIsLoading(true);
-
     try {
-      // Llamamos al service que simula un servidor
-      const mockUser = await loginMock(
-        loginData.email,
-        loginData.password,
-        loginData.role
-      );
+      // 1. Autenticar con Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginData.email,
+        password: loginData.password,
+      });
+  
+      // Guardar información de autenticación para debug
+      setDebugInfo({ 
+        authStatus: error ? "error" : "success",
+        authData: data ? { user: data.user ? { id: data.user.id, email: data.user.email } : null } : null,
+        authError: error,
+        step: "auth"
+      });
+  
+      if (error || !data.user) {
+        throw new Error("Credenciales inválidas. Por favor verifica tu correo y contraseña.");
+      }
+  
+      // 2. Obtener el perfil desde la tabla 'usuario'
+      const { data: profileData, error: profileError } = await supabase
+        .from("usuario")
+        .select("dni, nombre, rol")
+        .eq("id", data.user.id)
+        .single();
+  
+      // Actualizar información de debug
+      setDebugInfo(prevDebug => ({
+        ...prevDebug,
+        profileStatus: profileError ? "error" : "success",
+        profileData: profileData ? { 
+          dni: profileData.dni,
+          name: profileData.nombre,
+          role: profileData.rol
+        } : null,
+        profileError,
+        step: "profile"
+      }));
+  
+      if (profileError) {
+        // Si hay un error específico, mostramos un mensaje personalizado
+        if (profileError.code === "PGRST116") { // Código para "not found"
+          throw new Error("No se encontró tu perfil. Por favor comunícate con un preceptor para verificar tu cuenta.");
+        } else {
+          throw new Error(`Error al acceder a tu perfil: ${profileError.message}`);
+        }
+      }
+  
+      if (!profileData) {
+        throw new Error("Tu perfil de usuario está incompleto. Por favor comunícate con un preceptor.");
+      }
+  
+      // 3. Construir objeto de usuario para el contexto
       const user = {
-        dni: mockUser.dni,
-        name: mockUser.nombre,
-        email: mockUser.email,
-        role: mockUser.role,
+        dni: profileData.dni,
+        name: profileData.nombre,
+        email: loginData.email,
+        role: profileData.rol
       };
-      login(user);
-
+  
+      // 4. Login exitoso - actualizar el contexto
+      login(user);  
       setSuccessMessage("Inicio de sesión exitoso");
-      setError("");
-      navigate(`/${user.role}/StudentDashboard`); // Redirigimos al dashboard
+      
+      // 5. Actualizar debug final
+      setDebugInfo(prevDebug => ({
+        ...prevDebug,
+        loginStatus: "success",
+        user,
+        step: "final"
+      }));
+      
+      // 6. Redirigir según el rol
+      setTimeout(() => {
+        navigate(`/${profileData.rol}/StudentDashboard`);
+      }, 1000);
+     
     } catch (err) {
-      // ⚠️ Si algo sale mal (usuario no encontrado)
-      setError("Email, contraseña o rol incorrectos");
-      setSuccessMessage("");
+      // Actualizar información de debug con el error final
+      setDebugInfo(prevDebug => ({
+        ...prevDebug,
+        finalError: err.message,
+        step: "error"
+      }));
+      
+      setError(err.message || "Error al iniciar sesión");
     } finally {
-      // ⛔ Esto se ejecuta SIEMPRE, aunque falle el login
       setIsLoading(false);
     }
-    // Aquí iría la lógica de autenticación
   };
 
   return (
@@ -148,71 +170,7 @@ const Login = () => {
             onSubmit={handleSubmit}
             className={`auth-form ${formValidated ? "was-validated" : ""}`}
           >
-            {/* Selección de rol */}
-            <div className="form-group role-selection">
-              <label htmlFor="role" className="form-label">
-                <PersonFill className="icon" /> Ingresar como
-              </label>
-              <div className="role-options">
-                <div
-                  className={`role-option ${
-                    loginData.role === "alumno" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    setLoginData((prev) => ({ ...prev, role: "alumno" }))
-                  }
-                >
-                  <input
-                    type="radio"
-                    id="alumno"
-                    name="role"
-                    value="alumno"
-                    checked={loginData.role === "alumno"}
-                    onChange={handleInputChange}
-                  />
-                  <label htmlFor="alumno">Alumno</label>
-                </div>
-
-                <div
-                  className={`role-option ${
-                    loginData.role === "profesor" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    setLoginData((prev) => ({ ...prev, role: "profesor" }))
-                  }
-                >
-                  <input
-                    type="radio"
-                    id="profesor"
-                    name="role"
-                    value="profesor"
-                    checked={loginData.role === "profesor"}
-                    onChange={handleInputChange}
-                  />
-                  <label htmlFor="profesor">Profesor</label>
-                </div>
-
-                <div
-                  className={`role-option ${
-                    loginData.role === "preceptor" ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    setLoginData((prev) => ({ ...prev, role: "preceptor" }))
-                  }
-                >
-                  <input
-                    type="radio"
-                    id="preceptor"
-                    name="role"
-                    value="preceptor"
-                    checked={loginData.role === "preceptor"}
-                    onChange={handleInputChange}
-                  />
-                  <label htmlFor="preceptor">Preceptor</label>
-                </div>
-              </div>
-            </div>
-
+           
             <div className="form-group">
               <label htmlFor="email" className="form-label">
                 <EnvelopeFill className="icon" /> Correo electrónico
@@ -223,14 +181,10 @@ const Login = () => {
                 id="email"
                 name="email"
                 value={loginData.email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  handleInputChange(e);
-                }}
-                placeholder="tu@email.com"
+                onChange={handleInputChange}
+                placeholder="tu@its.edu.ar"
                 required
               />
-
               <div className="invalid-feedback">
                 El correo electrónico es obligatorio
               </div>
@@ -259,30 +213,23 @@ const Login = () => {
               type="submit"
               className="auth-button"
               disabled={isLoading}
-              onClick={handleSubmit}
             >
               {isLoading ? "Iniciando sesión..." : "Ingresar"}
             </button>
 
-            {/* Nota informativa sobre registro */}
-            {/* Separador para opciones de inicio de sesión */}
-            {/* Botón de inicio de sesión con Google */}
-            <div className="social-auth-container">
-              <button
-                type="button"
-                className="google-auth-button"
-                onClick={() => handleGoogleLogin()}
-                disabled={isLoading}
-              >
-                <img
-                  src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg"
-                  alt="Google"
-                  className="google-icon"
-                />
-                Iniciar sesión con Google
-              </button>
+            <div className="auth-links">
+              <Link to="/activar-cuenta">¿Primera vez? Activar mi cuenta</Link>
+              <Link to="/recuperar-password">Olvidé mi contraseña</Link>
             </div>
           </form>
+          
+          {/* Información de debug - Solo visible en desarrollo */}
+          {process.env.NODE_ENV === 'development' && debugInfo && (
+            <div className="debug-info">
+              <h4>Información de Debug</h4>
+              <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
+            </div>
+          )}
         </div>
       </div>
     </div>

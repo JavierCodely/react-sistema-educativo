@@ -1,8 +1,4 @@
-project url
-https://lxxnuyhlsmxdjqvwcvin.supabase.co
 
-api key 
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4eG51eWhsc214ZGpxdndjdmluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMDcxMTcsImV4cCI6MjA2MTY4MzExN30.nneoCc9dd4RJa4kgy2wakkZ-PS_f5VBWMFwcJ2ovy_Y
 /src
   /assets            # Imágenes, iconos, fuentes
   /components        # Componentes reutilizables
